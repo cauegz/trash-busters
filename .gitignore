@@ -1,0 +1,126 @@
+# ==========================================
+# Java & Spring Boot (Maven & Gradle)
+# ==========================================
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!checkstyle.xml
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.rar
+*.rbc
+*.jwt
+hs_err_pid*
+replay_pid*
+
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Log files
+*.log
+logs/
+
+# ==========================================
+# Frontend (Node.js & React / Vite)
+# ==========================================
+node_modules/
+.pnp
+.pnp.js
+coverage/
+dist/
+dist-ssr/
+build/
+*.tsbuildinfo
+
+# Debug logs do Node / NPM / Yarn
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.yarn/local
+.yarn/cache
+.yarn/unplugged
+
+# ==========================================
+# Variáveis de Ambiente e Segredos (CRÍTICO)
+# ==========================================
+# Nunca subir chaves de API (ex: Gemini/Google AI Studio), senhas de DB ou JWT secrets
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# ==========================================
+# IDEs e Editores de Código
+# ==========================================
+# IntelliJ IDEA / PhpStorm / WebStorm
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# Eclipse
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# NetBeans
+nbproject/private/
+build/
+nbbuild/
+dist/
+
+# Sublimetext
+*.sublime-project
+*.sublime-workspace
+
+# ==========================================
+# Arquivos do Sistema Operacional
+# ==========================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+Desktop.ini
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+
+# ==========================================
+# Uploads e Arquivos Temporários de Imagens
+# ==========================================
+# Pasta local onde a API salva temporariamente as fotos de lixo recebidas
+uploads/
+tmp/
+temp/
