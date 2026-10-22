@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgis/postgis:15-3.3
@@ -12,6 +10,13 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      # Mapeia os arquivos SQL locais para serem executados ao iniciar o banco
+      - ./database/init:/docker-entrypoint-initdb.d
+    networks:
+      - trashbusters-net
 
 volumes:
   pgdata:
+
+networks:
+  trashbusters-net:
