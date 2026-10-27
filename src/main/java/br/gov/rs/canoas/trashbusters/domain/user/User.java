@@ -1,66 +1,61 @@
 package br.gov.rs.canoas.trashbusters.domain.user;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 
-@Entity
-@Table(name = "tb_users")
+@Table(name = "usuario")
+@Entity(name = "Usuario")
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class User implements UserDetails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    private String login;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    private String senha;
 
-    @Column(nullable = false)
-    private String password;
+    private String nome;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role;
+    @Column(name = "papel_id")
+    private Long papelId;
 
-    @Column(nullable = false)
-    private Integer xp = 0;
-
-    public User(String name, String email, String password, Role role) {
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-        this.xp = 0;
+    public User(String login, String senha, String nome, Long papelId) {
+        this.login = login;
+        this.senha = senha;
+        this.nome = nome;
+        this.papelId = papelId;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (this.role == Role.INSPECTOR) {
-            return List.of(
-                    new SimpleGrantedAuthority("ROLE_INSPECTOR"),
-                    new SimpleGrantedAuthority("ROLE_PLAYER")
-            );
+        if (this.papelId != null && this.papelId == 1L) {
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_PLAYER"));
         }
         return List.of(new SimpleGrantedAuthority("ROLE_PLAYER"));
     }
 
     @Override
+    public String getPassword() {
+        return senha;
+    }
+
+    @Override
     public String getUsername() {
-        return email;
+        return login;
     }
 
     @Override

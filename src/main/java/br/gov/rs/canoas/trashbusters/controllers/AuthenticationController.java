@@ -10,9 +10,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-
-
-
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
@@ -25,7 +22,7 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid LoginRequestDTO data) {
-        var usernamePassword = new UsernamePasswordAuthenticationToken(data.email(), data.password());
+        var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
         var token = tokenService.generateToken((User) auth.getPrincipal());
@@ -35,14 +32,14 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody @Valid RegisterRequestDTO data) {
-        if (this.repository.existsByEmail(data.email())) {
-            return ResponseEntity.badRequest().body("E-mail já cadastrado.");
+        if (this.repository.existsByLogin(data.login())) {
+            return ResponseEntity.badRequest().body("Login já cadastrado.");
         }
 
         String encryptedPassword = passwordEncoder.encode(data.password());
-        Role userRole = (data.role() != null) ? data.role() : Role.PLAYER;
+        Long papelId = (data.papelId() != null) ? data.papelId() : 1L; // ID padrão para o papel na tabela
 
-        User newUser = new User(data.name(), data.email(), encryptedPassword, userRole);
+        User newUser = new User(data.login(), encryptedPassword, data.nome(), papelId);
         this.repository.save(newUser);
 
         return ResponseEntity.ok("Usuário registrado com sucesso!");

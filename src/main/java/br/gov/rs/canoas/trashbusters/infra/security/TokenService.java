@@ -15,21 +15,19 @@ import java.time.ZoneOffset;
 @Service
 public class TokenService {
 
-    @Value("${api.security.token.secret}")
+    @Value("${api.security.token.secret:my-secret-key}")
     private String secret;
 
     public String generateToken(User user) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.create()
-                    .withIssuer("trashbusters-api")
-                    .withSubject(user.getEmail())
-                    .withClaim("id", user.getId().toString())
-                    .withClaim("role", user.getRole().name())
+                    .withIssuer("trashbusters")
+                    .withSubject(user.getLogin()) // Atualizado de getEmail() para getLogin()
                     .withExpiresAt(genExpirationDate())
                     .sign(algorithm);
         } catch (JWTCreationException exception) {
-            throw new RuntimeException("Erro ao gerar token JWT", exception);
+            throw new RuntimeException("Erro enquanto gerava o token", exception);
         }
     }
 
@@ -37,7 +35,7 @@ public class TokenService {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.require(algorithm)
-                    .withIssuer("trashbusters-api")
+                    .withIssuer("trashbusters")
                     .build()
                     .verify(token)
                     .getSubject();
@@ -47,6 +45,6 @@ public class TokenService {
     }
 
     private Instant genExpirationDate() {
-        return LocalDateTime.now().plusHours(4).toInstant(ZoneOffset.of("-03:00"));
+        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }
 }
