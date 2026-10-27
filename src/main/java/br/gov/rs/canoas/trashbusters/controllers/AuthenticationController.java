@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,5 +44,13 @@ public class AuthenticationController {
         this.repository.save(newUser);
 
         return ResponseEntity.ok("Usuário registrado com sucesso!");
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<Object> getCurrentUser() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        User  user = (User) authentication.getPrincipal();
+
+        return ResponseEntity.ok(user);
     }
 }
