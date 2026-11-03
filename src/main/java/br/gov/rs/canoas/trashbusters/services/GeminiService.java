@@ -4,12 +4,13 @@ import br.gov.rs.canoas.trashbusters.domain.gemini.GeminiResponseDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.print.attribute.standard.Media;
+import org.springframework.ai.content.Media;
 
 @Service
 public class GeminiService {
 
-    public ResponseEntity<GeminiResponseDTO> analisarImagem(Media imagem){
+    public GeminiResponseDTO analisarImagem(Media imagem){
 
+        return new GeminiResponseDTO(true, 1);
     }
 }
