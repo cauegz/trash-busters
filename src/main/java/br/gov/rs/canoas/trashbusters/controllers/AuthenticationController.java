@@ -11,6 +11,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
+
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
@@ -26,7 +28,7 @@ public class AuthenticationController {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
-        var token = tokenService.generateToken((User) auth.getPrincipal());
+        var token = tokenService.generateToken((User) Objects.requireNonNull(auth.getPrincipal()));
 
         return ResponseEntity.ok(new LoginResponseDTO(token));
     }
@@ -34,7 +36,7 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody @Valid RegisterRequestDTO data) {
         if (this.repository.existsByLogin(data.login())) {
-            return ResponseEntity.badRequest().body("Login já cadastrado.");
+            return ResponseEntity.badRequest().body("{\"ok\": \"true\", \"mensagem\": \"login já cadastrado\"}");
         }
 
         String encryptedPassword = passwordEncoder.encode(data.password());
@@ -43,12 +45,13 @@ public class AuthenticationController {
         User newUser = new User(data.login(), encryptedPassword, data.nome(), papelId);
         this.repository.save(newUser);
 
-        return ResponseEntity.ok("Usuário registrado com sucesso!");
+        return ResponseEntity.ok("{\"ok\": \"true\", \"mensagem\": \"usuário criado com sucesso\"}");
     }
 
     @GetMapping("/me")
     public ResponseEntity<Object> getCurrentUser() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
+        assert authentication != null;
         User  user = (User) authentication.getPrincipal();
 
         return ResponseEntity.ok(user);
