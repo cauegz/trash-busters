@@ -3,6 +3,7 @@ package br.gov.rs.canoas.trashbusters.services;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.UUID;
@@ -11,12 +12,19 @@ import java.util.UUID;
 public class FileStorageService {
 
     public String storeImage(MultipartFile imagem){
-        String diretorio = "uploads/";
         try{
+            Path pastaUploads = Paths.get(
+                    System.getProperty("user.home"),
+                    "trash-busters",
+                    "uploads"
+            );
+
             String nomeOriginal = imagem.getOriginalFilename();
             String nomeUnico = UUID.randomUUID() + "_" + nomeOriginal;
 
-            Path caminhoCopmleto = Paths.get(diretorio).resolve(nomeUnico);
+            Files.createDirectories(pastaUploads);
+
+            Path caminhoCopmleto = pastaUploads.resolve(nomeUnico);
 
             imagem.transferTo(caminhoCopmleto.toFile());
 

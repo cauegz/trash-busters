@@ -14,7 +14,7 @@ public class ReportController {
     @PostMapping
     public ResponseEntity<ReportResponseDTO> report(@ModelAttribute @Valid ReportRequestDTO data){
         FileStorageService service = new FileStorageService();
-        service.storeImage(data.imagem());
-        return ResponseEntity.ok(new ReportResponseDTO("aaaaaa"));
+        String caminho = service.storeImage(data.imagem());
+        return ResponseEntity.ok(new ReportResponseDTO(caminho));
     }
 }
