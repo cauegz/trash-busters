@@ -7,6 +7,8 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.print.attribute.standard.Media;
+
 @RestController
 @RequestMapping("/api/v1/reports")
 public class ReportController {
@@ -15,6 +17,9 @@ public class ReportController {
     public ResponseEntity<ReportResponseDTO> report(@ModelAttribute @Valid ReportRequestDTO data){
         FileStorageService service = new FileStorageService();
         String caminho = service.storeImage(data.imagem());
+
+        Media imagemGemini = new Media
+
         return ResponseEntity.ok(new ReportResponseDTO(caminho));
     }
 }
