@@ -1,0 +1,32 @@
+meta {
+  name: POST /api/v1/reports
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/api/v1/reports
+  body: multipartForm
+  auth: none
+}
+
+headers {
+  Accept: application/json
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "endereco": "teste endereco",
+    "inimigoId": 1,
+    "bairroId": 1,
+    ""
+  }
+}
+
+body:multipart-form {
+  endereco: teste de endereco @contentType(text)
+  inimigoId: 1 @contentType(text)
+  bairroId: 1 @contentType(text)
+  imagem: @file(/home/caue/Downloads/lixo.jpeg) @contentType(image/jpeg)
+}
