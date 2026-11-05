@@ -4,8 +4,8 @@
 
 -- 1. Inserir Papéis (Roles) dos Usuários
 INSERT INTO papel (nome) VALUES
-     ('JOGADOR'),
-     ('ADMIN');
+     ('ROLE_ADMIN'),
+     ('ROLE_ADMIN');
 
 -- 2. Inserir Status possíveis para os Inimigos/Bosses
 INSERT INTO status (nome) VALUES
