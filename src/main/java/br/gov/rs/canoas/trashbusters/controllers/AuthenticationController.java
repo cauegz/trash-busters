@@ -1,6 +1,7 @@
 package br.gov.rs.canoas.trashbusters.controllers;
 
 import br.gov.rs.canoas.trashbusters.domain.user.*;
+import br.gov.rs.canoas.trashbusters.domain.user.User;
 import br.gov.rs.canoas.trashbusters.infra.security.TokenService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

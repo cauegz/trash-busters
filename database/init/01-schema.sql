@@ -1,4 +1,3 @@
-CREATE EXTENSION IF NOT EXISTS postgis;
 
 CREATE TABLE IF NOT EXISTS bairro
 (
@@ -10,7 +9,6 @@ CREATE TABLE IF NOT EXISTS bairro
 CREATE TABLE IF NOT EXISTS denuncia_lixo
 (
     id          INT                   NOT NULL GENERATED ALWAYS AS IDENTITY,
-    imagem      VARCHAR(255)         ,
     criado_em   TIMESTAMP             NOT NULL DEFAULT CURRENT_TIMESTAMP,
     localizacao GEOMETRY(Point, 4326) NOT NULL,
     usuario_id  INT                   NOT NULL,
