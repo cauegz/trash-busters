@@ -18,7 +18,7 @@ public class GeminiService {
             Analise a imagem enviada e determine se ela mostra lixo descartado de forma
             irregular. Responda somente com os campos do schema solicitado. Defina isLixo
             como true somente se houver lixo visível. Quando isLixo for true, dano deve ser
-            um inteiro de 1 a 10 proporcional à gravidade; caso contrário, dano deve ser 0.
+            um inteiro de 1 a 100 proporcional à gravidade; caso contrário, dano deve ser 0.
             """;
 
     private final ChatClient chatClient;
@@ -59,9 +59,7 @@ public class GeminiService {
         return this.chatClient.prompt()
                 .options(GoogleGenAiChatOptions.builder()
                         .model(modelo)
-                        .temperature(0.0)
-                        .maxOutputTokens(1024)
-                        .thinkingLevel(GoogleGenAiThinkingLevel.LOW))
+                        .temperature(0.0))
                 .system(INSTRUCAO)
                 .user(user -> user.text("Classifique esta imagem.").media(imagem))
                 .call()

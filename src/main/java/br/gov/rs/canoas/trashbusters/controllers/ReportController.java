@@ -3,25 +3,20 @@ package br.gov.rs.canoas.trashbusters.controllers;
 import br.gov.rs.canoas.trashbusters.domain.gemini.GeminiResponseDTO;
 import br.gov.rs.canoas.trashbusters.domain.inimigo.Inimigo;
 import br.gov.rs.canoas.trashbusters.domain.report.ReportRequestDTO;
-import br.gov.rs.canoas.trashbusters.domain.report.ReportResponseDTO;
 import br.gov.rs.canoas.trashbusters.domain.user.User;
 import br.gov.rs.canoas.trashbusters.services.*;
 import jakarta.validation.Valid;
+import org.springframework.ai.content.Media;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.util.MimeTypeUtils;
+import org.springframework.util.MimeType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import org.springframework.ai.content.Media;
-
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/reports")
@@ -45,7 +40,9 @@ public class ReportController {
     ) {
         MultipartFile imagem = data.imagem();
 
-        GeminiResponseDTO response;
+        if (imagem == null || imagem.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
 
         byte[] conteudoImagem;
         try {
@@ -54,12 +51,21 @@ public class ReportController {
             throw new RuntimeException("Não foi possível ler a imagem enviada", e);
         }
 
-        String caminho = this.fileStorageService.storeImage(imagem);
-        Media imagemGemini = new Media(
-                MimeTypeUtils.parseMimeType(Objects.requireNonNull(imagem.getContentType())),
-                new ByteArrayResource(conteudoImagem)
-        );
+        this.fileStorageService.storeImage(imagem);
 
+        String contentTypeStr = imagem.getContentType() != null ? imagem.getContentType() : "image/jpeg";
+        MimeType mimeType = MimeType.valueOf(contentTypeStr);
+
+        ByteArrayResource resource = new ByteArrayResource(conteudoImagem) {
+            @Override
+            public String getFilename() {
+                return imagem.getOriginalFilename() != null ? imagem.getOriginalFilename() : "image.jpg";
+            }
+        };
+
+        Media imagemGemini = new Media(mimeType, resource);
+
+        GeminiResponseDTO response;
         try {
             response = this.geminiService.analisarImagem(imagemGemini);
         } catch (GeminiService.GeminiIndisponivelException e) {
@@ -67,12 +73,12 @@ public class ReportController {
                     .body(new GeminiResponseDTO(false, 0));
         }
 
-        if(!response.isLixo()){
+        if (!response.isLixo()) {
             return ResponseEntity.badRequest().body(response);
         }
 
         Inimigo inimigo = this.inimigoService.getInimigoById(data.inimigoId())
-                .orElseThrow(() -> new RuntimeException("inimigo não encontrado"));
+                .orElseThrow(() -> new RuntimeException("Inimigo não encontrado"));
 
         this.reportService.salvarDenuncia(LocalDateTime.now(), data.endereco(), usuarioLogado, inimigo);
 
