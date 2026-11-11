@@ -8,6 +8,7 @@ import br.gov.rs.canoas.trashbusters.domain.user.User;
 import br.gov.rs.canoas.trashbusters.services.*;
 import jakarta.validation.Valid;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.MimeTypeUtils;
@@ -46,27 +47,34 @@ public class ReportController {
 
         GeminiResponseDTO response;
 
-        String caminho = this.fileStorageService.storeImage(imagem);
-        try{
-            Media imagemGemini = new Media(
-                    MimeTypeUtils.parseMimeType(Objects.requireNonNull(imagem.getContentType())),
-                    new ByteArrayResource(imagem.getBytes())
-            );
-
-            response = this.geminiService.analisarImagem(imagemGemini);
-
-            if(!response.isLixo()){
-                return ResponseEntity.badRequest().body(response);
-            }
-
-            Inimigo inimigo = this.inimigoService.getInimigoById(data.inimigoId())
-                    .orElseThrow(() -> new RuntimeException("inimigo não encontrado"));
-
-            this.reportService.salvarDenuncia(LocalDateTime.now(), data.endereco(), usuarioLogado, inimigo);
-
+        byte[] conteudoImagem;
+        try {
+            conteudoImagem = imagem.getBytes();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Não foi possível ler a imagem enviada", e);
         }
+
+        String caminho = this.fileStorageService.storeImage(imagem);
+        Media imagemGemini = new Media(
+                MimeTypeUtils.parseMimeType(Objects.requireNonNull(imagem.getContentType())),
+                new ByteArrayResource(conteudoImagem)
+        );
+
+        try {
+            response = this.geminiService.analisarImagem(imagemGemini);
+        } catch (GeminiService.GeminiIndisponivelException e) {
+            return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                    .body(new GeminiResponseDTO(false, 0));
+        }
+
+        if(!response.isLixo()){
+            return ResponseEntity.badRequest().body(response);
+        }
+
+        Inimigo inimigo = this.inimigoService.getInimigoById(data.inimigoId())
+                .orElseThrow(() -> new RuntimeException("inimigo não encontrado"));
+
+        this.reportService.salvarDenuncia(LocalDateTime.now(), data.endereco(), usuarioLogado, inimigo);
 
         return ResponseEntity.ok(response);
     }
