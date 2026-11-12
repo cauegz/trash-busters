@@ -70,10 +70,10 @@ public class ReportController {
             response = this.geminiService.analisarImagem(imagemGemini);
         } catch (GeminiService.GeminiIndisponivelException e) {
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
-                    .body(new GeminiResponseDTO(false, 0));
+                    .body(new GeminiResponseDTO(false, null, 0, null));
         }
 
-        if (!response.isLixo()) {
+        if (!response.valido()) {
             return ResponseEntity.badRequest().body(response);
         }
 

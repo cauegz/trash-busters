@@ -15,10 +15,12 @@ import java.util.logging.Logger;
 public class GeminiService {
     private static final Logger LOGGER = Logger.getLogger(GeminiService.class.getName());
     private static final String INSTRUCAO = """
-            Analise a imagem enviada e determine se ela mostra lixo descartado de forma
-            irregular. Responda somente com os campos do schema solicitado. Defina isLixo
-            como true somente se houver lixo visível. Quando isLixo for true, dano deve ser
-            um inteiro de 1 a 100 proporcional à gravidade; caso contrário, dano deve ser 0.
+            Você é o analisador de descarte irregular de lixo da plataforma TrashBusters.
+                    Examine a imagem enviada e determine:
+                    1. "valido": true se houver descarte irregular/acumulado de lixo visível na imagem; false caso contrário.
+                    2. "categoria": a categoria predominante do material (ex: ENTULHO, PLASTICO, MOVEIS, ELETRONICOS, ORGANICO).
+                    3. "severidade": um inteiro de 1 a 5 indicando a gravidade e volume do descarte.
+                    4. "justificativa": uma frase concisa justificando sua decisão.
             """;
 
     private final ChatClient chatClient;
