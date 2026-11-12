@@ -41,13 +41,8 @@ public class GeminiClientConfig {
             throw new IllegalStateException("Nenhuma chave de API válida foi encontrada no application.properties ou no ambiente (GOOGLE_API_KEY / GEMINI_API_KEY)!");
         }
 
-        String maskedKey = key.length() > 8
-                ? key.substring(0, 4) + "..." + key.substring(key.length() - 4)
-                : "INVALID";
-
         LOGGER.info("=== [TRASHBUSTERS AI] Inicializando GoogleGenAiClient ===");
         LOGGER.info("=== Origem da Chave: " + origem);
-        LOGGER.info("=== Chave Selecionada (mascarada): " + maskedKey);
 
         return Client.builder()
                 .apiKey(key)

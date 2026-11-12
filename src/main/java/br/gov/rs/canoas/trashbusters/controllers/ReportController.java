@@ -3,6 +3,7 @@ package br.gov.rs.canoas.trashbusters.controllers;
 import br.gov.rs.canoas.trashbusters.domain.gemini.GeminiResponseDTO;
 import br.gov.rs.canoas.trashbusters.domain.inimigo.Inimigo;
 import br.gov.rs.canoas.trashbusters.domain.report.ReportRequestDTO;
+import br.gov.rs.canoas.trashbusters.domain.status.StatusDenuncia;
 import br.gov.rs.canoas.trashbusters.domain.user.User;
 import br.gov.rs.canoas.trashbusters.services.*;
 import jakarta.validation.Valid;
@@ -51,15 +52,15 @@ public class ReportController {
             throw new RuntimeException("Não foi possível ler a imagem enviada", e);
         }
 
-        this.fileStorageService.storeImage(imagem);
+        String contentTypeStr = imagem.getContentType();
+        assert contentTypeStr != null;
 
-        String contentTypeStr = imagem.getContentType() != null ? imagem.getContentType() : "image/jpeg";
         MimeType mimeType = MimeType.valueOf(contentTypeStr);
 
         ByteArrayResource resource = new ByteArrayResource(conteudoImagem) {
             @Override
             public String getFilename() {
-                return imagem.getOriginalFilename() != null ? imagem.getOriginalFilename() : "image.jpg";
+                return imagem.getOriginalFilename();
             }
         };
 
@@ -72,15 +73,16 @@ public class ReportController {
             return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
                     .body(new GeminiResponseDTO(false, null, 0, null));
         }
-
+        StatusDenuncia status = StatusDenuncia.VALIDATED;
         if (!response.valido()) {
+            status = StatusDenuncia.REJECTED_AI;
             return ResponseEntity.badRequest().body(response);
         }
 
         Inimigo inimigo = this.inimigoService.getInimigoById(data.inimigoId())
                 .orElseThrow(() -> new RuntimeException("Inimigo não encontrado"));
 
-        this.reportService.salvarDenuncia(LocalDateTime.now(), data.endereco(), usuarioLogado, inimigo);
+        this.reportService.salvarDenuncia(LocalDateTime.now(), data.endereco(), usuarioLogado, inimigo, status, data.latitude(), data.longitude());
 
         return ResponseEntity.ok(response);
     }
