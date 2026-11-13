@@ -120,7 +120,6 @@
         "comment": "",
         "columnIds": [
           "03h3houudwadj0v4tkmn4560u",
-          "03h3hpc9zg678p3lemxunaqru",
           "03h3hpehp5l3ejz25dj4yxo16",
           "03h3hpqu1ysbu334hucdll70z",
           "03h3hqby32kp59o6mkdc70t67",
@@ -308,15 +307,6 @@
         "dataType": "INT",
         "default": "",
         "options": 11
-      },
-      "03h3hpc9zg678p3lemxunaqru": {
-        "id": "03h3hpc9zg678p3lemxunaqru",
-        "tableId": "03h3hosgf8386nk1kd6ck2uk3",
-        "name": "imagem",
-        "comment": "",
-        "dataType": "VARCHAR(255)",
-        "default": "",
-        "options": 0
       },
       "03h3hpehp5l3ejz25dj4yxo16": {
         "id": "03h3hpehp5l3ejz25dj4yxo16",
