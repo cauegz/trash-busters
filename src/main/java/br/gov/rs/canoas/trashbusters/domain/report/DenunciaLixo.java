@@ -36,7 +36,8 @@ public class DenunciaLixo {
     @Column(nullable = false)
     private StatusDenuncia status;
 
-    private String categoria;
+    @Enumerated(EnumType.STRING)
+    private CategoriaLixo categoria;
 
     private Integer severidade;
 

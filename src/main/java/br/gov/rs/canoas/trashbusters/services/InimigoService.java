@@ -17,4 +17,8 @@ public class InimigoService {
     public Optional<Inimigo> getInimigoById(long idInimigo){
         return this.inimigoRepository.findById(idInimigo);
     }
+
+    public Optional<Inimigo> findByBairroId(long bairroId){
+        return this.inimigoRepository.findByBairroId(bairroId);
+    }
 }

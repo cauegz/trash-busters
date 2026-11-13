@@ -1,5 +1,6 @@
 package br.gov.rs.canoas.trashbusters.domain.gemini;
 
+import br.gov.rs.canoas.trashbusters.domain.report.CategoriaLixo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record GeminiResponseDTO(
@@ -7,7 +8,7 @@ public record GeminiResponseDTO(
         boolean valido,
 
         @JsonProperty("categoria")
-        String categoria, // Ex: "ENTULHO", "PLASTICO", "MOVEIS", "ELETRONICOS", "NAO_IDENTIFICADO"
+        CategoriaLixo categoria,
 
         @JsonProperty("severidade")
         int severidade, // Nível de gravidade/volume de 1 a 5
