@@ -1,6 +1,6 @@
 package br.gov.rs.canoas.trashbusters.infra.exception;
 
-import br.gov.rs.canoas.trashbusters.services.GeminiService;
+import br.gov.rs.canoas.trashbusters.services.AiAnalysisService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(GeminiService.GeminiIndisponivelException.class)
-    public ResponseEntity<ApiErrorDTO> handleGeminiIndisponivel(GeminiService.GeminiIndisponivelException ex) {
+    @ExceptionHandler(AiAnalysisService.AiUnavailableException.class)
+    public ResponseEntity<ApiErrorDTO> handleAiUnavailable(AiAnalysisService.AiUnavailableException ex) {
         ApiErrorDTO erro = new ApiErrorDTO(
                 HttpStatus.SERVICE_UNAVAILABLE.value(),
                 "Serviço de IA indisponível",

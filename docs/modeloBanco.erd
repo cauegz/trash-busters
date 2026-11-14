@@ -106,7 +106,9 @@
         "comment": "",
         "columnIds": [
           "03h3hol2l6j6mkj65efo4r07t",
-          "03h3homev2rnz6zpdnxsg95sy"
+          "03h3homev2rnz6zpdnxsg95sy",
+          "tb_bairro_codigo_ibge",
+          "tb_bairro_poligono"
         ],
         "ui": {
           "x": 1132.7103,
@@ -123,7 +125,13 @@
           "03h3hpehp5l3ejz25dj4yxo16",
           "03h3hpqu1ysbu334hucdll70z",
           "03h3hqby32kp59o6mkdc70t67",
-          "03h3hqeyy3tmjktn1v4j7koj9"
+          "03h3hqeyy3tmjktn1v4j7koj9",
+          "tb_denuncia_status",
+          "tb_denuncia_caminho_imagem",
+          "tb_denuncia_severidade",
+          "tb_denuncia_justificativa_ia",
+          "tb_denuncia_categoria",
+          "tb_denuncia_endereco"
         ],
         "ui": {
           "x": 608.6595,
@@ -320,7 +328,7 @@
       "03h3hpqu1ysbu334hucdll70z": {
         "id": "03h3hpqu1ysbu334hucdll70z",
         "tableId": "03h3hosgf8386nk1kd6ck2uk3",
-        "name": "localizacao",
+        "name": "coordenadas",
         "comment": "",
         "dataType": "GEOMETRY(Point, 4326)",
         "default": "",
@@ -388,6 +396,78 @@
         "dataType": "INT",
         "default": "",
         "options": 8
+      },
+      "tb_bairro_codigo_ibge": {
+        "id": "tb_bairro_codigo_ibge",
+        "tableId": "03h3hoknr3k988kzjgt7smdgg",
+        "name": "codigo_ibge",
+        "comment": "",
+        "dataType": "VARCHAR(20)",
+        "default": "",
+        "options": 0
+      },
+      "tb_bairro_poligono": {
+        "id": "tb_bairro_poligono",
+        "tableId": "03h3hoknr3k988kzjgt7smdgg",
+        "name": "poligono",
+        "comment": "",
+        "dataType": "GEOMETRY(MultiPolygon, 4326)",
+        "default": "",
+        "options": 8
+      },
+      "tb_denuncia_status": {
+        "id": "tb_denuncia_status",
+        "tableId": "03h3hosgf8386nk1kd6ck2uk3",
+        "name": "status",
+        "comment": "",
+        "dataType": "VARCHAR(25)",
+        "default": "",
+        "options": 8
+      },
+      "tb_denuncia_caminho_imagem": {
+        "id": "tb_denuncia_caminho_imagem",
+        "tableId": "03h3hosgf8386nk1kd6ck2uk3",
+        "name": "caminho_imagem",
+        "comment": "",
+        "dataType": "VARCHAR(100)",
+        "default": "",
+        "options": 0
+      },
+      "tb_denuncia_severidade": {
+        "id": "tb_denuncia_severidade",
+        "tableId": "03h3hosgf8386nk1kd6ck2uk3",
+        "name": "severidade",
+        "comment": "",
+        "dataType": "INT",
+        "default": "",
+        "options": 0
+      },
+      "tb_denuncia_justificativa_ia": {
+        "id": "tb_denuncia_justificativa_ia",
+        "tableId": "03h3hosgf8386nk1kd6ck2uk3",
+        "name": "justificativa_ia",
+        "comment": "",
+        "dataType": "VARCHAR(200)",
+        "default": "",
+        "options": 0
+      },
+      "tb_denuncia_categoria": {
+        "id": "tb_denuncia_categoria",
+        "tableId": "03h3hosgf8386nk1kd6ck2uk3",
+        "name": "categoria",
+        "comment": "",
+        "dataType": "VARCHAR(50)",
+        "default": "",
+        "options": 0
+      },
+      "tb_denuncia_endereco": {
+        "id": "tb_denuncia_endereco",
+        "tableId": "03h3hosgf8386nk1kd6ck2uk3",
+        "name": "endereco",
+        "comment": "",
+        "dataType": "VARCHAR(255)",
+        "default": "",
+        "options": 0
       },
       "03h3hrsv9piuaglqk9gr66zz0": {
         "id": "03h3hrsv9piuaglqk9gr66zz0",

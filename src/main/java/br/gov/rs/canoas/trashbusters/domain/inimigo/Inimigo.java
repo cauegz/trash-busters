@@ -3,6 +3,7 @@ package br.gov.rs.canoas.trashbusters.domain.inimigo;
 import br.gov.rs.canoas.trashbusters.domain.bairro.Bairro;
 import br.gov.rs.canoas.trashbusters.domain.logCombate.LogCombate;
 import br.gov.rs.canoas.trashbusters.domain.report.DenunciaLixo;
+import br.gov.rs.canoas.trashbusters.domain.status.StatusInimigo;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -30,12 +31,20 @@ public class Inimigo {
     @JoinColumn(name = "bairro_id")
     private Bairro bairro;
 
-    @JoinColumn(name = "status_id")
-    private int statusId;
+    @Column(name = "status_id", nullable = false)
+    private StatusInimigo status;
 
     @OneToMany(mappedBy = "inimigo")
     private List<DenunciaLixo> denunciaLixoList = new ArrayList<>();
 
     @OneToMany(mappedBy = "inimigo")
     private List<LogCombate> logCombateList = new ArrayList<>();
+
+    public void receberDano(Integer dano, StatusInimigo statusDerrotado) {
+        this.hpAtual = Math.max(0, this.hpAtual - dano);
+
+        if(hpAtual == 0){
+            this.status = statusDerrotado;
+        }
+    }
 }

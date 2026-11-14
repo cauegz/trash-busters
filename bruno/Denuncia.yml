@@ -14,7 +14,7 @@ http:
         value: Av. Rio Grande do Sul, 1750 - Mathias Velho, Canoas - RS
       - name: latitude
         type: text
-        value: "-29.9085"
+        value: "-29.9089"
       - name: longitude
         type: text
         value: "-51.2015"

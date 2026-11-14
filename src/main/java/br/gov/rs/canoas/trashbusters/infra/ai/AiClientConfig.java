@@ -19,29 +19,25 @@ import org.springframework.util.StringUtils;
 import java.util.logging.Logger;
 
 @Configuration
-public class GeminiClientConfig {
+public class AiClientConfig {
 
-    private static final Logger LOGGER = Logger.getLogger(GeminiClientConfig.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(AiClientConfig.class.getName());
 
     @Bean
-    public Client googleGenAiClient(@Value("${spring.ai.google.genai.api-key:}") String apiKeyProperty) {
+    public Client aiProviderClient(@Value("${ai.provider.api-key:}") String apiKeyProperty) {
         String key = apiKeyProperty;
         String origem = "application.properties";
 
         if (!StringUtils.hasText(key) || key.startsWith("${")) {
-            key = System.getenv("GOOGLE_API_KEY");
-            origem = "System.getenv(GOOGLE_API_KEY)";
-        }
-        if (!StringUtils.hasText(key) || key.startsWith("${")) {
-            key = System.getenv("GEMINI_API_KEY");
-            origem = "System.getenv(GEMINI_API_KEY)";
+            key = System.getenv("AI_API_KEY");
+            origem = "System.getenv(AI_API_KEY)";
         }
 
         if (!StringUtils.hasText(key) || key.startsWith("${")) {
-            throw new IllegalStateException("Nenhuma chave de API válida foi encontrada no application.properties ou no ambiente (GOOGLE_API_KEY / GEMINI_API_KEY)!");
+            throw new IllegalStateException("Nenhuma chave de API válida foi encontrada em ai.provider.api-key ou AI_API_KEY!");
         }
 
-        LOGGER.info("=== [TRASHBUSTERS AI] Inicializando GoogleGenAiClient ===");
+        LOGGER.info("=== [TRASHBUSTERS AI] Inicializando cliente do provedor configurado ===");
         LOGGER.info("=== Origem da Chave: " + origem);
 
         return Client.builder()
@@ -54,11 +50,11 @@ public class GeminiClientConfig {
     }
 
     @Bean
-    public GoogleGenAiChatModel googleGenAiChatModel(
-            Client googleGenAiClient,
-            @Value("${trashbusters.ai.primary-model:gemini-3.5-flash}") String defaultModel
+    public GoogleGenAiChatModel aiChatModel(
+            Client aiProviderClient,
+            @Value("${ai.provider.model:gemini-3.5-flash}") String defaultModel
     ) {
-        LOGGER.info("=== [TRASHBUSTERS AI] Configurando GoogleGenAiChatModel ===");
+        LOGGER.info("=== [TRASHBUSTERS AI] Configurando o modelo de IA ===");
         LOGGER.info("=== Modelo Primário Alvo: " + defaultModel);
 
         GoogleGenAiChatOptions options = GoogleGenAiChatOptions.builder()
@@ -71,7 +67,7 @@ public class GeminiClientConfig {
         RetryTemplate retryTemplate = RetryUtils.DEFAULT_RETRY_TEMPLATE;
 
         return new GoogleGenAiChatModel(
-                googleGenAiClient,
+                aiProviderClient,
                 options,
                 toolCallingManager,
                 retryTemplate,
