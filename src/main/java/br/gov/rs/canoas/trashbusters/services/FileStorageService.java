@@ -1,5 +1,8 @@
 package br.gov.rs.canoas.trashbusters.services;
 
+import br.gov.rs.canoas.trashbusters.domain.user.User;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,10 +16,13 @@ public class FileStorageService {
 
     public String storeImage(MultipartFile imagem){
         try{
+            User usuario = getUsuarioLogado();
+
             Path pastaUploads = Paths.get(
                     System.getProperty("user.home"),
                     "trash-busters",
-                    "uploads"
+                    "uploads",
+                    usuario.getId().toString()
             );
 
             String nomeOriginal = imagem.getOriginalFilename();
@@ -32,5 +38,12 @@ public class FileStorageService {
         } catch (Exception e) {
             throw new RuntimeException("Erro ao tentar salvar a imagem: " + e.getMessage(), e);
         }
+    }
+
+    private User getUsuarioLogado(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+
+        assert auth != null;
+        return (User) auth.getPrincipal();
     }
 }

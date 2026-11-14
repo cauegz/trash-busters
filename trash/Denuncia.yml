@@ -1,0 +1,35 @@
+info:
+  name: Denuncia
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: http://localhost:8080/api/v1/reports
+  body:
+    type: multipart-form
+    data:
+      - name: endereco
+        type: text
+        value: Av. Rio Grande do Sul, 1750 - Mathias Velho, Canoas - RS
+      - name: latitude
+        type: text
+        value: "-29.9085"
+      - name: longitude
+        type: text
+        value: "-51.2015"
+      - name: imagem
+        type: file
+        value:
+          - C:\Users\caueg\Downloads\lixo.jpg
+        contentType: image/jpeg
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ0cmFzaGJ1c3RlcnMiLCJzdWIiOiJ0ZXN0ZSIsImV4cCI6MTc5NDU0MjA4NH0.jQCDq3jrfOf7Wu4PEEutqPC0HapGBjhtO8OTW19L5rw
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

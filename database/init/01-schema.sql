@@ -1,22 +1,29 @@
+
 CREATE EXTENSION IF NOT EXISTS postgis;
 
-CREATE TABLE IF NOT EXISTS bairro
-(
-    id   INT          NOT NULL GENERATED ALWAYS AS IDENTITY,
-    nome VARCHAR(100) NOT NULL UNIQUE,
-    PRIMARY KEY (id)
-    );
+
+CREATE TABLE IF NOT EXISTS bairro (
+     id BIGSERIAL PRIMARY KEY,
+     nome VARCHAR(100) NOT NULL UNIQUE,
+     codigo_ibge VARCHAR(20),
+     poligono geometry(MultiPolygon, 4326) NOT NULL
+);
 
 CREATE TABLE IF NOT EXISTS denuncia_lixo
 (
-    id          INT                   NOT NULL GENERATED ALWAYS AS IDENTITY,
-    imagem      VARCHAR(255)         ,
-    criado_em   TIMESTAMP             NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    localizacao GEOMETRY(Point, 4326) NOT NULL,
-    usuario_id  INT                   NOT NULL,
-    inimigo_id  INT                   NOT NULL,
+    id               INT                   NOT NULL GENERATED ALWAYS AS IDENTITY,
+    status           VARCHAR(25)           NOT NULL,
+    caminho_imagem   VARCHAR(100)         ,
+    severidade       INT                  ,
+    criado_em        TIMESTAMP             NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    justificativa_ia VARCHAR(200)         ,
+    categoria        VARCHAR(50)          ,
+    coordenadas      GEOMETRY(Point, 4326) NOT NULL,
+    endereco         VARCHAR(255)         ,
+    usuario_id       INT                   NOT NULL,
+    inimigo_id       INT                  ,
     PRIMARY KEY (id)
-    );
+);
 
 CREATE TABLE IF NOT EXISTS inimigo
 (
@@ -27,7 +34,7 @@ CREATE TABLE IF NOT EXISTS inimigo
     bairro_id INT          NOT NULL,
     status_id INT          NOT NULL,
     PRIMARY KEY (id)
-    );
+);
 
 CREATE TABLE IF NOT EXISTS log_combate
 (
@@ -37,21 +44,21 @@ CREATE TABLE IF NOT EXISTS log_combate
     denuncia_lixo_id INT NOT NULL,
     inimigo_id       INT NOT NULL,
     PRIMARY KEY (id)
-    );
+);
 
 CREATE TABLE IF NOT EXISTS papel
 (
     id   INT          NOT NULL GENERATED ALWAYS AS IDENTITY,
     nome VARCHAR(100) NOT NULL UNIQUE,
     PRIMARY KEY (id)
-    );
+);
 
 CREATE TABLE IF NOT EXISTS status
 (
     id   INT          NOT NULL GENERATED ALWAYS AS IDENTITY,
     nome VARCHAR(100) NOT NULL UNIQUE,
     PRIMARY KEY (id)
-    );
+);
 
 CREATE TABLE IF NOT EXISTS usuario
 (
@@ -61,7 +68,10 @@ CREATE TABLE IF NOT EXISTS usuario
     nome     VARCHAR(100),
     papel_id INT          NOT NULL,
     PRIMARY KEY (id)
-    );
+);
+
+CREATE INDEX IF NOT EXISTS idx_bairro_poligono ON bairro USING GIST (poligono);
+CREATE INDEX IF NOT EXISTS idx_denuncia_coordenadas ON denuncia_lixo USING GIST (coordenadas);
 
 ALTER TABLE usuario DROP CONSTRAINT IF EXISTS FK_papel_TO_usuario;
 ALTER TABLE usuario

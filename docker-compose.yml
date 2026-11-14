@@ -3,15 +3,41 @@ services:
     image: postgis/postgis:15-3.3
     container_name: trashbusters_db
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: trashbusters_db
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-trashbusters_db}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
       # Mapeia os arquivos SQL locais para serem executados ao iniciar o banco
       - ./database/init:/docker-entrypoint-initdb.d
+    networks:
+      - trashbusters-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: trashbusters_api
+    env_file:
+      - .env
+    environment:
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY:?Defina GOOGLE_API_KEY no arquivo .env}
+      API_SECURITY_TOKEN_SECRET: ${API_SECURITY_TOKEN_SECRET:-my-secret-key}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-trashbusters_db}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
     networks:
       - trashbusters-net
 

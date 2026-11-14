@@ -4,7 +4,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public record ReportRequestDTO(
         String endereco,
-        Integer inimigoId,
-        Integer bairroId,
+        Double longitude, //x
+        Double latitude, //y
         MultipartFile imagem
 ){}

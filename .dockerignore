@@ -1,0 +1,9 @@
+.git
+.agents
+.codex
+.idea
+.env
+target
+uploads
+*.iml
+README.md
