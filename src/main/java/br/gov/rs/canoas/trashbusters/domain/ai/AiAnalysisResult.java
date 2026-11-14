@@ -1,9 +1,9 @@
-package br.gov.rs.canoas.trashbusters.domain.gemini;
+package br.gov.rs.canoas.trashbusters.domain.ai;
 
 import br.gov.rs.canoas.trashbusters.domain.report.CategoriaLixo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record GeminiResponseDTO(
+public record AiAnalysisResult(
         @JsonProperty("valido")
         boolean valido,
 

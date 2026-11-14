@@ -2,7 +2,7 @@ package br.gov.rs.canoas.trashbusters.controllers;
 
 import br.gov.rs.canoas.trashbusters.domain.bairro.Bairro;
 import br.gov.rs.canoas.trashbusters.services.BairroService;
-import br.gov.rs.canoas.trashbusters.domain.gemini.GeminiResponseDTO;
+import br.gov.rs.canoas.trashbusters.domain.ai.AiAnalysisResult;
 import br.gov.rs.canoas.trashbusters.domain.inimigo.Inimigo;
 import br.gov.rs.canoas.trashbusters.domain.inimigo.InimigoDTO;
 import br.gov.rs.canoas.trashbusters.domain.report.ReportRequestDTO;
@@ -29,17 +29,17 @@ public class ReportController {
     private final InimigoService inimigoService;
     private final ReportService reportService;
     private final FileStorageService fileStorageService;
-    private final GeminiService geminiService;
+    private final AiAnalysisService aiAnalysisService;
 
     //4326 é o código padrão pra usar o gps
     private final GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
     private final BairroService bairroService;
 
-    public ReportController(InimigoService inimigoService, ReportService reportService, FileStorageService fileStorageService, GeminiService geminiService, BairroService bairroService) {
+    public ReportController(InimigoService inimigoService, ReportService reportService, FileStorageService fileStorageService, AiAnalysisService aiAnalysisService, BairroService bairroService) {
         this.inimigoService = inimigoService;
         this.reportService = reportService;
         this.fileStorageService = fileStorageService;
-        this.geminiService = geminiService;
+        this.aiAnalysisService = aiAnalysisService;
         this.bairroService = bairroService;
     }
 
@@ -52,26 +52,26 @@ public class ReportController {
 
         MultipartFile imagem = data.imagem();
 
-        Media imagemGemini = GeminiService.getMedia(imagem);
+        Media media = AiAnalysisService.getMedia(imagem);
 
-        GeminiResponseDTO geminiResponse = this.geminiService.analisarImagem(imagemGemini);
+        AiAnalysisResult analysis = this.aiAnalysisService.analisarImagem(media);
 
         StatusDenuncia status = StatusDenuncia.VALIDATED;
 
-        if (!geminiResponse.valido()) {
+        if (!analysis.valido()) {
             status = StatusDenuncia.REJECTED_AI;
             this.reportService.salvarDenuncia(
                     LocalDateTime.now(), data.endereco(), usuarioLogado,
                     status, coordernadas,
-                    geminiResponse.categoria(), geminiResponse.severidade(), geminiResponse.justificativa(),
+                    analysis.categoria(), analysis.severidade(), analysis.justificativa(),
                     null, null
             );
             return ResponseEntity.badRequest().body(
                     new ReportResponseDTO(
-                            geminiResponse.justificativa(),
-                            geminiResponse.severidade(),
+                            analysis.justificativa(),
+                            analysis.severidade(),
                             false,
-                            geminiResponse.categoria(),
+                            analysis.categoria(),
                             null
                     )
             );
@@ -92,18 +92,18 @@ public class ReportController {
                 usuarioLogado,
                 status,
                 coordernadas,
-                geminiResponse.categoria(),
-                geminiResponse.severidade(),
-                geminiResponse.justificativa(),
+                analysis.categoria(),
+                analysis.severidade(),
+                analysis.justificativa(),
                 caminho,
                 inimigo
         );
 
         return ResponseEntity.ok(new ReportResponseDTO(
-                geminiResponse.justificativa(),
-                geminiResponse.severidade(),
+                analysis.justificativa(),
+                analysis.severidade(),
                 true,
-                geminiResponse.categoria(),
+                analysis.categoria(),
                 InimigoDTO.fromEntity(inimigo)
         ));
     }

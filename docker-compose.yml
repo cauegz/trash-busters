@@ -28,7 +28,9 @@ services:
     env_file:
       - .env
     environment:
-      GOOGLE_API_KEY: ${GOOGLE_API_KEY:?Defina GOOGLE_API_KEY no arquivo .env}
+      AI_API_KEY: ${AI_API_KEY:?Defina AI_API_KEY no arquivo .env}
+      AI_PROVIDER_NAME: ${AI_PROVIDER_NAME:-default}
+      AI_MODEL: ${AI_MODEL:-gemini-3.5-flash}
       API_SECURITY_TOKEN_SECRET: ${API_SECURITY_TOKEN_SECRET:-my-secret-key}
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-trashbusters_db}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}
