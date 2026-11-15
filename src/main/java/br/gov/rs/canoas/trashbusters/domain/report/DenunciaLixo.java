@@ -1,7 +1,6 @@
 package br.gov.rs.canoas.trashbusters.domain.report;
 
 import br.gov.rs.canoas.trashbusters.domain.inimigo.Inimigo;
-import br.gov.rs.canoas.trashbusters.domain.logCombate.LogCombate;
 import br.gov.rs.canoas.trashbusters.domain.status.StatusDenuncia;
 import br.gov.rs.canoas.trashbusters.domain.user.User;
 import jakarta.persistence.*;
@@ -41,6 +40,8 @@ public class DenunciaLixo {
 
     private Integer severidade;
 
+    private Integer dano;
+
     @Column(length = 500)
     private String justificativaIa;
 
@@ -54,7 +55,4 @@ public class DenunciaLixo {
     @ManyToOne
     @JoinColumn(name = "inimigo_id")
     private Inimigo inimigo;
-
-    @OneToMany(mappedBy = "denunciaLixo")
-    private List<LogCombate> logCombateList = new ArrayList<>();
 }

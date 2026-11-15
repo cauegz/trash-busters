@@ -2,26 +2,29 @@
 CREATE EXTENSION IF NOT EXISTS postgis;
 
 
-CREATE TABLE IF NOT EXISTS bairro (
-     id BIGSERIAL PRIMARY KEY,
-     nome VARCHAR(100) NOT NULL UNIQUE,
-     codigo_ibge VARCHAR(20),
-     poligono geometry(MultiPolygon, 4326) NOT NULL
+CREATE TABLE IF NOT EXISTS bairro
+(
+    id          INT                          NOT NULL GENERATED ALWAYS AS IDENTITY,
+    nome        VARCHAR(100)                 NOT NULL UNIQUE,
+    codigo_ibge VARCHAR(20)                 ,
+    poligono    GEOMETRY(MultiPolygon, 4326) NOT NULL,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS denuncia_lixo
 (
     id               INT                   NOT NULL GENERATED ALWAYS AS IDENTITY,
+    criado_em        TIMESTAMP             NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    coordenadas      GEOMETRY(Point, 4326) NOT NULL,
+    usuario_id       INT                   NOT NULL,
+    inimigo_id       INT                   NOT NULL,
     status           VARCHAR(25)           NOT NULL,
     caminho_imagem   VARCHAR(100)         ,
     severidade       INT                  ,
-    criado_em        TIMESTAMP             NOT NULL DEFAULT CURRENT_TIMESTAMP,
     justificativa_ia VARCHAR(200)         ,
     categoria        VARCHAR(50)          ,
-    coordenadas      GEOMETRY(Point, 4326) NOT NULL,
     endereco         VARCHAR(255)         ,
-    usuario_id       INT                   NOT NULL,
-    inimigo_id       INT                  ,
+    dano             INT                  ,
     PRIMARY KEY (id)
 );
 
@@ -33,16 +36,6 @@ CREATE TABLE IF NOT EXISTS inimigo
     hp_atual  INT          NOT NULL DEFAULT 100,
     bairro_id INT          NOT NULL,
     status_id INT          NOT NULL,
-    PRIMARY KEY (id)
-);
-
-CREATE TABLE IF NOT EXISTS log_combate
-(
-    id               INT NOT NULL GENERATED ALWAYS AS IDENTITY,
-    dano_realizado   INT,
-    usuario_id       INT NOT NULL,
-    denuncia_lixo_id INT NOT NULL,
-    inimigo_id       INT NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -66,12 +59,10 @@ CREATE TABLE IF NOT EXISTS usuario
     login    VARCHAR(100) NOT NULL UNIQUE,
     senha    VARCHAR(255) NOT NULL,
     nome     VARCHAR(100),
+    xp       INT          NOT NULL DEFAULT 0,
     papel_id INT          NOT NULL,
     PRIMARY KEY (id)
 );
-
-CREATE INDEX IF NOT EXISTS idx_bairro_poligono ON bairro USING GIST (poligono);
-CREATE INDEX IF NOT EXISTS idx_denuncia_coordenadas ON denuncia_lixo USING GIST (coordenadas);
 
 ALTER TABLE usuario DROP CONSTRAINT IF EXISTS FK_papel_TO_usuario;
 ALTER TABLE usuario
@@ -96,24 +87,6 @@ ALTER TABLE inimigo
     ADD CONSTRAINT FK_bairro_TO_inimigo
         FOREIGN KEY (bairro_id)
             REFERENCES bairro (id);
-
-ALTER TABLE log_combate DROP CONSTRAINT IF EXISTS FK_usuario_TO_log_combate;
-ALTER TABLE log_combate
-    ADD CONSTRAINT FK_usuario_TO_log_combate
-        FOREIGN KEY (usuario_id)
-            REFERENCES usuario (id);
-
-ALTER TABLE log_combate DROP CONSTRAINT IF EXISTS FK_denuncia_lixo_TO_log_combate;
-ALTER TABLE log_combate
-    ADD CONSTRAINT FK_denuncia_lixo_TO_log_combate
-        FOREIGN KEY (denuncia_lixo_id)
-            REFERENCES denuncia_lixo (id);
-
-ALTER TABLE log_combate DROP CONSTRAINT IF EXISTS FK_inimigo_TO_log_combate;
-ALTER TABLE log_combate
-    ADD CONSTRAINT FK_inimigo_TO_log_combate
-        FOREIGN KEY (inimigo_id)
-            REFERENCES inimigo (id);
 
 ALTER TABLE inimigo DROP CONSTRAINT IF EXISTS FK_status_TO_inimigo;
 ALTER TABLE inimigo

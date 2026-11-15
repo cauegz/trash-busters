@@ -1,0 +1,18 @@
+info:
+  name: me
+  type: http
+  seq: 6
+
+http:
+  method: GET
+  url: http://localhost:8080/api/v1/auth/me
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ0cmFzaGJ1c3RlcnMiLCJzdWIiOiJ0ZXN0ZSIsImV4cCI6MTc5NDc1NTI5Nn0.Y8Kcl36URbdXdGyMPGKZLWqjth6c_jjViEI0hCmZyNo
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

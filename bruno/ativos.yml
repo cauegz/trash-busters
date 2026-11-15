@@ -1,0 +1,18 @@
+info:
+  name: ativos
+  type: http
+  seq: 4
+
+http:
+  method: GET
+  url: http://localhost:8080/api/v1/combat/active
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ0cmFzaGJ1c3RlcnMiLCJzdWIiOiJ0ZXN0ZSIsImV4cCI6MTc5NDcwNTE3OH0.ApYBYhVtRzYHwQUHk_Lusz8BQqe0hFKUBJStS26lDyU
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

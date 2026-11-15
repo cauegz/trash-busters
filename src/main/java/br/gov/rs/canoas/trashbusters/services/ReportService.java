@@ -53,6 +53,7 @@ public class ReportService {
         denuncia.setSeveridade(severidade);
         denuncia.setJustificativaIa(justificativaIa);
         denuncia.setCaminhoImagem(caminhoImagem);
+        denuncia.setDano(dano);
 
         this.denunciaRepository.save(denuncia);
     }

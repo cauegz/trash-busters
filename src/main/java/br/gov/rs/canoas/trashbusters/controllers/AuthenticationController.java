@@ -41,9 +41,13 @@ public class AuthenticationController {
         }
 
         String encryptedPassword = passwordEncoder.encode(data.password());
-        Long papelId = (data.papelId() != null) ? data.papelId() : 1L; // ID padrão para o papel na tabela
 
-        User newUser = new User(data.login(), encryptedPassword, data.nome(), papelId);
+        User newUser = new User(
+                data.login(),
+                encryptedPassword,
+                data.nome(),
+                Role.PLAYER.getId()
+        );
         this.repository.save(newUser);
 
         return ResponseEntity.ok("{\"ok\": \"true\", \"mensagem\": \"usuário criado com sucesso\"}");
@@ -55,6 +59,7 @@ public class AuthenticationController {
         assert authentication != null;
         User  user = (User) authentication.getPrincipal();
 
-        return ResponseEntity.ok(user);
+        assert user != null;
+        return ResponseEntity.ok(UserDTO.fromEntity(user));
     }
 }
