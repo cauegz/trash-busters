@@ -19,6 +19,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
     }
 
+    @ExceptionHandler(BairroNotFoundException.class)
+    public ResponseEntity<ApiErrorDTO> handleBairroNotFound(BairroNotFoundException ex){
+        ApiErrorDTO erro = new ApiErrorDTO(
+                HttpStatus.NOT_FOUND.value(),
+                "Bairro não encontrado",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
+    }
+
     @ExceptionHandler(AiAnalysisService.AiUnavailableException.class)
     public ResponseEntity<ApiErrorDTO> handleAiUnavailable(AiAnalysisService.AiUnavailableException ex) {
         ApiErrorDTO erro = new ApiErrorDTO(

@@ -62,7 +62,7 @@ public class BairroSeeder implements CommandLineRunner {
             }
         }
 
-        // 2. Insere os Bosses vinculados aos bairros reais recém-criados
+        // 2. Insere os bosses com nomes próprios dos bairros principais
         jdbcTemplate.execute("""
             INSERT INTO inimigo (nome, hp_max, hp_atual, bairro_id, status_id) VALUES
                ('EntulhoSauro', 1500, 1500, (SELECT id FROM bairro WHERE nome = 'Mathias Velho'), (SELECT id FROM status WHERE nome = 'ATIVO')),
@@ -70,6 +70,27 @@ public class BairroSeeder implements CommandLineRunner {
                ('Kraken dos Entulhos', 1200, 1200, (SELECT id FROM bairro WHERE nome = 'Niterói'), (SELECT id FROM status WHERE nome = 'ATIVO')),
                ('Lord Pneu', 1000, 1000, (SELECT id FROM bairro WHERE nome = 'Centro'), (SELECT id FROM status WHERE nome = 'ATIVO')),
                ('Fumaça Negra', 1300, 1300, (SELECT id FROM bairro WHERE nome = 'Harmonia'), (SELECT id FROM status WHERE nome = 'ATIVO'))
+            ON CONFLICT (nome) DO NOTHING;
+        """);
+
+        // 3. Garante um boss para cada bairro que ainda não possui um
+        jdbcTemplate.execute("""
+            INSERT INTO inimigo (nome, hp_max, hp_atual, bairro_id, status_id)
+            SELECT
+                CONCAT('Boss de ', b.nome),
+                1000,
+                1000,
+                b.id,
+                s.id
+            FROM bairro b
+            CROSS JOIN (
+                SELECT id FROM status WHERE nome = 'ATIVO'
+            ) s
+            WHERE NOT EXISTS (
+                SELECT 1
+                FROM inimigo i
+                WHERE i.bairro_id = b.id
+            )
             ON CONFLICT (nome) DO NOTHING;
         """);
     }
