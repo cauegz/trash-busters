@@ -1,0 +1,18 @@
+info:
+  name: derrotados
+  type: http
+  seq: 5
+
+http:
+  method: GET
+  url: http://localhost:8080/api/v1/combat/defeated
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ0cmFzaGJ1c3RlcnMiLCJzdWIiOiJ0ZXN0ZSIsImV4cCI6MTc5NDg0Njc3M30.-Wnu6TR-RV_pykmhIcNgzLlkJz0bgOm3jeSFDRrxXBU
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

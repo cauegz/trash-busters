@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,6 +29,8 @@ public class User implements UserDetails {
 
     private String senha;
 
+    private Integer xp = 0;
+
     private String nome;
 
     @Column(name = "papel_id")
@@ -41,11 +44,17 @@ public class User implements UserDetails {
     }
 
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (this.papelId != null && this.papelId == 1L) {
-            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_PLAYER"));
+    public @NonNull Collection<? extends GrantedAuthority> getAuthorities() {
+        Role role = Role.fromId(this.papelId);
+
+        if (role == Role.ADMIN) {
+            return List.of(
+                    new SimpleGrantedAuthority(Role.ADMIN.getAuthority()),
+                    new SimpleGrantedAuthority(Role.PLAYER.getAuthority())
+            );
         }
-        return List.of(new SimpleGrantedAuthority("ROLE_PLAYER"));
+
+        return List.of(new SimpleGrantedAuthority(Role.PLAYER.getAuthority()));
     }
 
     @Override
@@ -54,19 +63,11 @@ public class User implements UserDetails {
     }
 
     @Override
-    public String getUsername() {
+    public @NonNull String getUsername() {
         return login;
     }
 
-    @Override
-    public boolean isAccountNonExpired() { return true; }
-
-    @Override
-    public boolean isAccountNonLocked() { return true; }
-
-    @Override
-    public boolean isCredentialsNonExpired() { return true; }
-
-    @Override
-    public boolean isEnabled() { return true; }
+    public void receberXp(Integer xp){
+        this.xp = this.getXp() + xp;
+    }
 }

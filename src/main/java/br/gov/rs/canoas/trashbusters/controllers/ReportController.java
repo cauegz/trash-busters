@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/reports")
@@ -72,6 +73,9 @@ public class ReportController {
                             analysis.severidade(),
                             false,
                             analysis.categoria(),
+                            0,
+                            data.latitude(),
+                            data.longitude(),
                             null
                     )
             );
@@ -86,7 +90,7 @@ public class ReportController {
         Inimigo inimigo = inimigoService.findByBairroId(bairro.getId())
                 .orElseThrow(() -> new IllegalArgumentException("falha ao pegar inimigo"));
 
-        this.reportService.salvarDenuncia(
+        Integer dano = this.reportService.salvarDenuncia(
                 LocalDateTime.now(),
                 data.endereco(),
                 usuarioLogado,
@@ -104,7 +108,17 @@ public class ReportController {
                 analysis.severidade(),
                 true,
                 analysis.categoria(),
+                dano,
+                data.latitude(),
+                data.longitude(),
                 InimigoDTO.fromEntity(inimigo)
         ));
+    }
+
+    @GetMapping("/mine")
+    public ResponseEntity<List<ReportResponseDTO>> mineReports(
+            @AuthenticationPrincipal User usuarioLogado
+    ){
+        return ResponseEntity.ok(reportService.getAllReportsByUser(usuarioLogado));
     }
 }

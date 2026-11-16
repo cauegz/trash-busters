@@ -6,9 +6,11 @@ import br.gov.rs.canoas.trashbusters.domain.report.DenunciaLixo;
 import br.gov.rs.canoas.trashbusters.domain.report.DenunciaLixoRepository;
 import br.gov.rs.canoas.trashbusters.domain.status.StatusDenuncia;
 import br.gov.rs.canoas.trashbusters.domain.status.StatusInimigo;
+import br.gov.rs.canoas.trashbusters.domain.user.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.mockito.ArgumentCaptor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.time.LocalDateTime;
 
@@ -20,7 +22,9 @@ class ReportServiceTest {
     @Test
     void devePersistirDenunciaEAplicarDanoAoInimigo() {
         DenunciaLixoRepository repository = mock(DenunciaLixoRepository.class);
-        ReportService service = new ReportService(repository);
+        UserRepository userRepository = mock(UserRepository.class);
+
+        ReportService service = new ReportService(repository, userRepository);
         Inimigo inimigo = new Inimigo();
         inimigo.setHpAtual(200);
         inimigo.setStatus(StatusInimigo.ATIVO);
@@ -52,7 +56,9 @@ class ReportServiceTest {
     @Test
     void devePersistirDenunciaRejeitadaSemAplicarDano() {
         DenunciaLixoRepository repository = mock(DenunciaLixoRepository.class);
-        ReportService service = new ReportService(repository);
+        UserRepository userRepository = mock(UserRepository.class);
+
+        ReportService service = new ReportService(repository, userRepository);
 
         service.salvarDenuncia(
                 LocalDateTime.now(),
