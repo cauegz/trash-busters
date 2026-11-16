@@ -22,7 +22,7 @@ public record ReportResponseDTO (
                 denunciaLixo.getDano(),
                 denunciaLixo.getCoordenadas().getY(),
                 denunciaLixo.getCoordenadas().getX(),
-                InimigoDTO.fromEntity(denunciaLixo.getInimigo())
+                denunciaLixo.getInimigo() != null ? InimigoDTO.fromEntity(denunciaLixo.getInimigo()) : null
         );
     }
 }
