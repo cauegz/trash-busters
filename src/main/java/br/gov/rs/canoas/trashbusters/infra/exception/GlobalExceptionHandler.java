@@ -9,6 +9,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(InimigoNotFoundException.class)
+    public ResponseEntity<ApiErrorDTO> handleInimigoNotFound(InimigoNotFoundException ex) {
+        ApiErrorDTO erro = new ApiErrorDTO(
+                HttpStatus.NOT_FOUND.value(),
+                "Inimigo não encontrado",
+                ex.getMessage()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(erro);
+    }
+
     @ExceptionHandler(AiAnalysisService.AiUnavailableException.class)
     public ResponseEntity<ApiErrorDTO> handleAiUnavailable(AiAnalysisService.AiUnavailableException ex) {
         ApiErrorDTO erro = new ApiErrorDTO(

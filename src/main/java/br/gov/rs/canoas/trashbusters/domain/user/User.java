@@ -66,4 +66,8 @@ public class User implements UserDetails {
     public @NonNull String getUsername() {
         return login;
     }
+
+    public void receberXp(Integer xp){
+        this.xp = this.getXp() + xp;
+    }
 }
