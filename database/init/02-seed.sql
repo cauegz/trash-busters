@@ -5,7 +5,8 @@
 -- 1. Inserir Papéis (Roles) dos Usuários
 INSERT INTO papel (nome) VALUES
      ('ROLE_ADMIN'),
-     ('ROLE_PLAYER')
+     ('ROLE_PLAYER'),
+     ('ROLE_INSPECTOR')
 ON CONFLICT (nome) DO NOTHING;
 
 -- 2. Usuário administrador inicial

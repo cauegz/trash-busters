@@ -47,14 +47,20 @@ public class User implements UserDetails {
     public @NonNull Collection<? extends GrantedAuthority> getAuthorities() {
         Role role = Role.fromId(this.papelId);
 
-        if (role == Role.ADMIN) {
-            return List.of(
+        return switch (role) {
+            case ADMIN -> List.of(
                     new SimpleGrantedAuthority(Role.ADMIN.getAuthority()),
+                    new SimpleGrantedAuthority(Role.INSPECTOR.getAuthority()),
                     new SimpleGrantedAuthority(Role.PLAYER.getAuthority())
             );
-        }
-
-        return List.of(new SimpleGrantedAuthority(Role.PLAYER.getAuthority()));
+            case INSPECTOR -> List.of(
+                    new SimpleGrantedAuthority(Role.INSPECTOR.getAuthority()),
+                    new SimpleGrantedAuthority(Role.PLAYER.getAuthority())
+            );
+            case PLAYER -> List.of(
+                    new SimpleGrantedAuthority(Role.PLAYER.getAuthority())
+            );
+        };
     }
 
     @Override

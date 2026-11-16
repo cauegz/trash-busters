@@ -9,7 +9,8 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public enum Role {
     ADMIN(1L, "ROLE_ADMIN"),
-    PLAYER(2L, "ROLE_PLAYER");
+    PLAYER(2L, "ROLE_PLAYER"),
+    INSPECTOR(3L, "ROLE_INSPECTOR");
 
     private final Long id;
     private final String authority;
