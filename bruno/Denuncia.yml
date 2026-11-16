@@ -25,7 +25,7 @@ http:
         contentType: image/jpeg
   auth:
     type: bearer
-    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ0cmFzaGJ1c3RlcnMiLCJzdWIiOiJ0ZXN0ZSIsImV4cCI6MTc5NDc1NTI5Nn0.Y8Kcl36URbdXdGyMPGKZLWqjth6c_jjViEI0hCmZyNo
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ0cmFzaGJ1c3RlcnMiLCJzdWIiOiJ0ZXN0ZSIsImV4cCI6MTc5NDg3NzU5M30.2SYzU8WzGXzu5_KLg4g9jPq68p6UqNxAabqlKXKxW3w
 
 settings:
   encodeUrl: true

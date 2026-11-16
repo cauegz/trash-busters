@@ -1,16 +1,16 @@
 package br.gov.rs.canoas.trashbusters.services;
 
 import br.gov.rs.canoas.trashbusters.domain.inimigo.Inimigo;
-import br.gov.rs.canoas.trashbusters.domain.report.CategoriaLixo;
-import br.gov.rs.canoas.trashbusters.domain.report.DenunciaLixo;
-import br.gov.rs.canoas.trashbusters.domain.report.DenunciaLixoRepository;
-import br.gov.rs.canoas.trashbusters.domain.report.ReportResponseDTO;
+import br.gov.rs.canoas.trashbusters.domain.report.*;
 import br.gov.rs.canoas.trashbusters.domain.status.StatusDenuncia;
 import br.gov.rs.canoas.trashbusters.domain.status.StatusInimigo;
 import br.gov.rs.canoas.trashbusters.domain.user.User;
 import br.gov.rs.canoas.trashbusters.domain.user.UserRepository;
 import jakarta.transaction.Transactional;
 import org.locationtech.jts.geom.Point;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -73,6 +73,42 @@ public class ReportService {
                 .stream()
                 .map(ReportResponseDTO::fromEntity)
                 .toList();
+    }
+
+    public Page<ReportResponseDTO> filtrar(ReportFilterDTO filtro, Pageable pageable) {
+        validarFiltroEspacial(filtro);
+
+        Specification<DenunciaLixo> spec = Specification.allOf(
+                DenunciaSpecs.comCategoria(filtro.categoriaLixo()),
+                DenunciaSpecs.comStatus(filtro.statusDenuncia()),
+                DenunciaSpecs.comSeveridadeMinima(filtro.severidadeMinima()),
+                DenunciaSpecs.doBairro(filtro.bairroId()),
+                DenunciaSpecs.doInimigo(filtro.inimigoId()),
+                DenunciaSpecs.proximoDe(filtro.latitude(), filtro.longitude(), filtro.raio()),
+                DenunciaSpecs.criadoEntre(filtro.dataInicio(), filtro.dataFim())
+        );
+
+        return denunciaRepository.findAll(spec, pageable)
+                .map(ReportResponseDTO::fromEntity);
+    }
+
+    private void validarFiltroEspacial(ReportFilterDTO filtro) {
+        boolean possuiLatitude = filtro.latitude() != null;
+        boolean possuiLongitude = filtro.longitude() != null;
+        boolean possuiRaio = filtro.raio() != null;
+
+        if (possuiLatitude || possuiLongitude || possuiRaio) {
+            if (!possuiLatitude || !possuiLongitude || !possuiRaio) {
+                throw new IllegalArgumentException(
+                        "latitude, longitude e raio devem ser informados juntos"
+                );
+            }
+            if (filtro.latitude() < -90 || filtro.latitude() > 90
+                    || filtro.longitude() < -180 || filtro.longitude() > 180
+                    || filtro.raio() <= 0) {
+                throw new IllegalArgumentException("filtro espacial inválido");
+            }
+        }
     }
 
     private Integer calcularDano(CategoriaLixo categoria, Integer severidade){

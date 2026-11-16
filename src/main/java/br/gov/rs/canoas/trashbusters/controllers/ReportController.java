@@ -69,13 +69,15 @@ public class ReportController {
             );
             return ResponseEntity.badRequest().body(
                     new ReportResponseDTO(
-                            analysis.justificativa(),
+                    null,
+                    analysis.justificativa(),
                             analysis.severidade(),
                             false,
                             analysis.categoria(),
                             0,
                             data.latitude(),
                             data.longitude(),
+                            StatusDenuncia.REJECTED_AI,
                             null
                     )
             );
@@ -104,6 +106,7 @@ public class ReportController {
         );
 
         return ResponseEntity.ok(new ReportResponseDTO(
+                null,
                 analysis.justificativa(),
                 analysis.severidade(),
                 true,
@@ -111,6 +114,7 @@ public class ReportController {
                 dano,
                 data.latitude(),
                 data.longitude(),
+                StatusDenuncia.VALIDATED,
                 InimigoDTO.fromEntity(inimigo)
         ));
     }

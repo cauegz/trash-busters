@@ -11,13 +11,15 @@ public record InimigoDTO(
     String bairro
 ) {
     public static InimigoDTO fromEntity(Inimigo inimigo){
+        if (inimigo == null) return null;
+
         return new InimigoDTO(
                 inimigo.getId(),
                 inimigo.getNome(),
                 inimigo.getStatus(),
                 inimigo.getHpAtual(),
                 inimigo.getHpMax(),
-                inimigo.getBairro().getNome()
+                inimigo.getBairro() == null ? null : inimigo.getBairro().getNome()
         );
     }
 }
