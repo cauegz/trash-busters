@@ -3,18 +3,13 @@
 services:
   app:
     image: maven:3.9.9-eclipse-temurin-21
+    working_dir: /workspace
     volumes:
       - ./pom.xml:/workspace/pom.xml
       - ./src:/workspace/src
       - ~/.m2:/root/.m2
     command: ["mvn", "spring-boot:run"]
-    depends_on:
-      postgres:
-        condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-trashbusters_db}
-      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}
-      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
       AI_API_KEY: ${AI_API_KEY:?Defina AI_API_KEY no arquivo .env}
       AI_PROVIDER_NAME: ${AI_PROVIDER_NAME:-default}
       AI_MODEL: ${AI_MODEL:-gemini-3.5-flash}

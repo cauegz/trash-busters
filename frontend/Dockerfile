@@ -1,7 +1,28 @@
-FROM node:20-alpine
+FROM node:20-alpine AS build
 WORKDIR /app
-COPY package.json ./
-RUN npm install
+
+COPY package*.json ./
+RUN npm ci
+
 COPY . .
-EXPOSE 5173
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+# Recebe a URL da API na hora do build (ex: https://trashbusters-api.onrender.com)
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
+
+RUN npm run build
+
+FROM nginx:alpine
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# Evita erro 404 ao recarregar rotas do React Router
+RUN printf 'server {\n\
+    listen 80;\n\
+    location / {\n\
+        root /usr/share/nginx/html;\n\
+        index index.html;\n\
+        try_files $uri $uri/ /index.html;\n\
+    }\n\
+}\n' > /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

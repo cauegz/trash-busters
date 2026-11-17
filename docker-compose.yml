@@ -32,14 +32,8 @@ services:
       AI_PROVIDER_NAME: ${AI_PROVIDER_NAME:-default}
       AI_MODEL: ${AI_MODEL:-gemini-3.5-flash}
       API_SECURITY_TOKEN_SECRET: ${API_SECURITY_TOKEN_SECRET:-my-secret-key}
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-trashbusters_db}
-      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}
-      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     ports:
       - "${APP_PORT:-8080}:8080"
-    depends_on:
-      postgres:
-        condition: service_healthy
     networks:
       - trashbusters-net
 
