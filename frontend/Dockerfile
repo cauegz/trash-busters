@@ -8,6 +8,8 @@ COPY . .
 # Recebe a URL da API na hora do build (ex: https://trashbusters-api.onrender.com)
 ARG VITE_API_URL
 ENV VITE_API_URL=$VITE_API_URL
+ARG VITE_CARTO_API_KEY
+ENV VITE_CARTO_API_KEY=$VITE_CARTO_API_KEY
 
 RUN npm run build
 

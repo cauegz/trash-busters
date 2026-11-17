@@ -31,3 +31,18 @@ docker compose up --build
 ```
 - Front-End: `http://localhost:5173`
 - API Spring Boot: `http://localhost:8080`
+
+### Chave das tiles do mapa
+
+As tiles do CARTO exigem uma chave de API. Solicite uma chave em
+`https://carto.com/basemaps/apikey/` e defina `VITE_CARTO_API_KEY` no ambiente
+de build. Para desenvolvimento local, crie `frontend/.env.local` (esse arquivo
+não deve ser versionado):
+
+```env
+VITE_CARTO_API_KEY=sua-chave-do-carto
+```
+
+Na Vercel, configure essa variável para o ambiente de produção. Restrinja a
+chave ao domínio `trash-busters-six.vercel.app` e, se desejar usar o mapa
+localmente, também a `localhost` e `127.0.0.1`.

@@ -39,8 +39,16 @@ export default function CanoasMap({
       zoomControl: true,
     });
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; OpenStreetMap &copy; CARTO | Trash Busters Canoas',
+    const cartoApiKey = import.meta.env.VITE_CARTO_API_KEY?.trim();
+    const tileUrl = cartoApiKey
+      ? `https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png?key=${encodeURIComponent(cartoApiKey)}`
+      : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    const attribution = cartoApiKey
+      ? '&copy; OpenStreetMap &copy; CARTO | Trash Busters Canoas'
+      : '&copy; OpenStreetMap contributors | Trash Busters Canoas';
+
+    L.tileLayer(tileUrl, {
+      attribution,
       maxZoom: 19,
     }).addTo(map);
 

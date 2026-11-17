@@ -41,6 +41,8 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        VITE_CARTO_API_KEY: ${VITE_CARTO_API_KEY:-}
     container_name: trashbusters_frontend
     environment:
       VITE_API_URL: http://localhost:8080
