@@ -4,7 +4,6 @@ import br.gov.rs.canoas.trashbusters.domain.bairro.Bairro;
 import br.gov.rs.canoas.trashbusters.domain.bairro.BairroDTO;
 import br.gov.rs.canoas.trashbusters.domain.bairro.BairroRepository;
 import br.gov.rs.canoas.trashbusters.domain.inimigo.Inimigo;
-import br.gov.rs.canoas.trashbusters.domain.inimigo.InimigoDTO;
 import br.gov.rs.canoas.trashbusters.domain.inimigo.InimigoRepository;
 import br.gov.rs.canoas.trashbusters.infra.exception.BairroNotFoundException;
 import br.gov.rs.canoas.trashbusters.infra.exception.InimigoNotFoundException;

@@ -1,9 +1,7 @@
 package br.gov.rs.canoas.trashbusters.controllers;
 
 import br.gov.rs.canoas.trashbusters.domain.bairro.BairroDTO;
-import br.gov.rs.canoas.trashbusters.domain.inimigo.Inimigo;
 import br.gov.rs.canoas.trashbusters.services.BairroService;
-import br.gov.rs.canoas.trashbusters.services.InimigoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

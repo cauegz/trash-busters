@@ -10,6 +10,7 @@ public record UserDTO(
         Integer xp,
         List<String> papel
 ) {
+    @SuppressWarnings("null")
     public static UserDTO fromEntity(User usuario){
         return new UserDTO(
                 usuario.getNome(),

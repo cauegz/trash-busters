@@ -10,7 +10,6 @@ import br.gov.rs.canoas.trashbusters.domain.user.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.mockito.ArgumentCaptor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.time.LocalDateTime;
 
