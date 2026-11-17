@@ -18,4 +18,4 @@ USER spring
 EXPOSE 8080
 
 # O heap deixa espaço para Metaspace, threads, JIT, Spring e bibliotecas nativas no limite de 512 MB.
-ENTRYPOINT ["java", "-XX:MaxRAMPercentage=55", "-XX:InitialRAMPercentage=20", "-XX:MaxMetaspaceSize=96m", "-XX:+UseSerialGC", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-XX:+UseSerialGC", "-Xmx220m", "-Xms128m", "-XX:MaxMetaspaceSize=170m", "-XX:CompressedClassSpaceSize=32m", "-jar", "/app/app.jar"]
