@@ -1,6 +1,8 @@
 import { BAIRROS_PRESETS, CATEGORIAS_LIXO } from '../data/canoasBairros';
 
-const DEFAULT_API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const DEFAULT_API_BASE =
+  import.meta.env.VITE_API_URL ||
+  (import.meta.env.DEV ? 'http://localhost:8080' : '');
 
 const STORAGE_KEYS = {
   TOKEN: 'trashbusters_jwt',

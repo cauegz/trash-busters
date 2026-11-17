@@ -3,6 +3,26 @@ import L from 'leaflet';
 import { BAIRROS_PRESETS, CANOAS_CENTER, getBairroMeta } from '../data/canoasBairros';
 import { Crosshair, Layers, ShieldAlert, ShieldCheck } from 'lucide-react';
 
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function hasCoordinatePair(coords) {
+  return (
+    coords?.latitude !== null &&
+    coords?.latitude !== undefined &&
+    coords?.longitude !== null &&
+    coords?.longitude !== undefined &&
+    Number.isFinite(Number(coords.latitude)) &&
+    Number.isFinite(Number(coords.longitude))
+  );
+}
+
 export default function CanoasMap({
   bairros = [],
   selectedBairro,
@@ -17,16 +37,30 @@ export default function CanoasMap({
   const markersLayerRef = useRef(null);
   const pinMarkerRef = useRef(null);
   const [geoJsonData, setGeoJsonData] = useState(null);
+  const [geoJsonError, setGeoJsonError] = useState('');
   const [showReportPins, setShowReportPins] = useState(true);
 
   // Carrega o GeoJSON oficial dos 18 bairros de Canoas
   useEffect(() => {
     fetch('/bairros.geojson')
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        if (data) setGeoJsonData(data);
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        return response.json();
       })
-      .catch(() => {});
+      .then((data) => {
+        if (!data || data.type !== 'FeatureCollection') {
+          throw new Error('Formato GeoJSON inválido');
+        }
+        setGeoJsonData(data);
+        setGeoJsonError('');
+      })
+      .catch(() => {
+        setGeoJsonError(
+          'Não foi possível carregar os limites dos bairros. Os marcadores continuam disponíveis.'
+        );
+      });
   }, []);
 
   // Inicializa o mapa Leaflet
@@ -159,7 +193,7 @@ export default function CanoasMap({
             box-shadow:0 4px 12px rgba(0,0,0,0.5);white-space:nowrap;
           ">
             <span>${derrotado ? '🏆' : preset.emoji}</span>
-            <span>${b.nome}</span>
+            <span>${escapeHtml(b.nome)}</span>
             <span style="color:${derrotado ? '#34d399' : '#fda4af'};font-family:monospace;">
               ${derrotado ? 'LIMPO' : `${pct}%`}
             </span>
@@ -202,9 +236,9 @@ export default function CanoasMap({
           circle.bindPopup(`
             <div style="font-size:12px;min-width:170px;">
               <div style="font-weight:700;margin-bottom:4px;color:${rep.valido ? '#34d399' : '#f87171'}">
-                ${rep.valido ? `✅ Denúncia confirmada (${rep.categoria})` : '❌ Não confirmada'}
+                ${rep.valido ? `✅ Denúncia confirmada (${escapeHtml(rep.categoria)})` : '❌ Não confirmada'}
               </div>
-              <div style="color:#cbd5e1;font-size:11px;">${rep.justificativaIa || ''}</div>
+              <div style="color:#cbd5e1;font-size:11px;">${escapeHtml(rep.justificativaIa)}</div>
             </div>
           `);
           circle.addTo(markersLayerRef.current);
@@ -223,7 +257,7 @@ export default function CanoasMap({
       pinMarkerRef.current = null;
     }
 
-    if (selectedCoords?.latitude && selectedCoords?.longitude) {
+    if (hasCoordinatePair(selectedCoords)) {
       const pinIcon = L.divIcon({
         html: `
           <div style="
@@ -263,7 +297,7 @@ export default function CanoasMap({
       <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 bg-white border-b border-slate-200">
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center justify-center w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
-          <h3 className="font-display font-bold text-sm sm:text-base text-slate-100">
+          <h3 className="font-display font-bold text-sm sm:text-base text-slate-900">
             Mapa de ocorrências em Canoas/RS
           </h3>
         </div>
@@ -274,8 +308,8 @@ export default function CanoasMap({
             onClick={() => setShowReportPins((v) => !v)}
             className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg border transition ${
               showReportPins
-                ? 'bg-sky-500/15 text-sky-300 border-sky-500/40'
-                : 'bg-slate-800 text-slate-400 border-slate-700'
+                ? 'bg-sky-50 text-sky-700 border-sky-300'
+                : 'bg-slate-100 text-slate-600 border-slate-300'
             }`}
           >
             <Layers className="w-3.5 h-3.5" />
@@ -284,13 +318,19 @@ export default function CanoasMap({
           <button
             type="button"
             onClick={handleCenterCanoas}
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition"
           >
             <Crosshair className="w-3.5 h-3.5" />
             Centralizar Canoas
           </button>
         </div>
       </div>
+
+      {geoJsonError && (
+        <div className="px-4 py-2.5 bg-amber-50 border-b border-amber-200 text-xs text-amber-800">
+          {geoJsonError}
+        </div>
+      )}
 
       {/* Container Leaflet */}
       <div ref={mapContainerRef} className="w-full h-[380px] sm:h-[440px] z-0" />

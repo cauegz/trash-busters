@@ -350,7 +350,7 @@ export default function App() {
 
           {/* Card do Boss do Bairro Selecionado */}
           {selectedBairro && (
-            <div className="rounded-2xl border border-slate-800 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 p-5 shadow-xl">
+            <div className="rounded-2xl border border-slate-200 bg-gradient-to-br from-white via-white to-slate-50 p-5 shadow-sm">
               {(() => {
                 const inimigo = selectedBairro.inimigo || {};
                 const meta = getBairroMeta(selectedBairro.nome);
@@ -593,7 +593,14 @@ export default function App() {
                     <div
                       key={idx}
                       onClick={() => {
-                        if (rep.latitude && rep.longitude) {
+                        if (
+                          rep.latitude !== null &&
+                          rep.latitude !== undefined &&
+                          rep.longitude !== null &&
+                          rep.longitude !== undefined &&
+                          Number.isFinite(Number(rep.latitude)) &&
+                          Number.isFinite(Number(rep.longitude))
+                        ) {
                           setSelectedCoords({
                             latitude: rep.latitude,
                             longitude: rep.longitude,

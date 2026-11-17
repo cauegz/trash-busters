@@ -17,6 +17,12 @@ Front-end gamificado para a plataforma **Trash Busters (Canoas/RS)**, integrado 
 
 ## Como Executar
 
+`VITE_API_URL` pode ser usada para apontar o frontend para uma API publicada
+(por exemplo, `https://trashbusters-api.onrender.com`). Em desenvolvimento, o
+padrão é `http://localhost:8080`; em builds de produção sem essa variável, o
+frontend usa a mesma origem da página, permitindo publicar a API atrás do
+mesmo domínio sem apontar para o `localhost` do usuário.
+
 ### Opção 1: Com Node.js (Vite Dev Server)
 ```bash
 cd frontend

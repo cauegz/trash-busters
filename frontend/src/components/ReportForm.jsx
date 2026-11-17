@@ -14,6 +14,19 @@ import {
 import { BAIRROS_PRESETS, CATEGORIAS_LIXO } from '../data/canoasBairros';
 import { api, isDemoMode } from '../services/api';
 
+function hasCoordinatePair(coords) {
+  return (
+    coords?.latitude !== null &&
+    coords?.latitude !== undefined &&
+    coords?.latitude !== '' &&
+    coords?.longitude !== null &&
+    coords?.longitude !== undefined &&
+    coords?.longitude !== '' &&
+    Number.isFinite(Number(coords.latitude)) &&
+    Number.isFinite(Number(coords.longitude))
+  );
+}
+
 // Gera uma imagem sintética em Canvas para facilitar testes rápidos sem precisar procurar arquivo no PC
 function generateSampleTrashImage(bairroNome = 'Canoas', categoria = 'ENTULHO') {
   return new Promise((resolve) => {
@@ -86,9 +99,15 @@ export default function ReportForm({
   const [error, setError] = useState('');
   const [lastResult, setLastResult] = useState(null);
 
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
+
   // Sincroniza quando o usuário clica no mapa ou escolhe um bairro
   useEffect(() => {
-    if (selectedCoords?.latitude && selectedCoords?.longitude) {
+    if (hasCoordinatePair(selectedCoords)) {
       setLatitude(selectedCoords.latitude);
       setLongitude(selectedCoords.longitude);
       if (selectedCoords.endereco) {
