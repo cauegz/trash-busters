@@ -4,40 +4,39 @@ import br.gov.rs.canoas.trashbusters.domain.user.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 @Service
 public class FileStorageService {
 
-    public String storeImage(MultipartFile imagem){
-        try{
+    public String storeImage(Path temporaryImage, String originalFilename) {
+        try {
             User usuario = getUsuarioLogado();
-
             Path pastaUploads = Paths.get(
-                    System.getProperty("user.home"),
-                    "trash-busters",
-                    "uploads",
-                    usuario.getId().toString()
-            );
-
-            String nomeOriginal = imagem.getOriginalFilename();
-            String nomeUnico = UUID.randomUUID() + "_" + nomeOriginal;
-
+                    System.getProperty("user.home"), "trash-busters", "uploads",
+                    usuario.getId().toString());
             Files.createDirectories(pastaUploads);
 
-            Path caminhoCopmleto = pastaUploads.resolve(nomeUnico);
-
-            imagem.transferTo(caminhoCopmleto.toFile());
-
-            return caminhoCopmleto.toString();
+            String nomeUnico = UUID.randomUUID() + "_" + sanitizeFilename(originalFilename) + ".jpg";
+            Path caminhoCompleto = pastaUploads.resolve(nomeUnico);
+            Files.move(temporaryImage, caminhoCompleto, StandardCopyOption.REPLACE_EXISTING);
+            return caminhoCompleto.toString();
         } catch (Exception e) {
             throw new RuntimeException("Erro ao tentar salvar a imagem: " + e.getMessage(), e);
         }
+    }
+
+    private String sanitizeFilename(String filename) {
+        if (filename == null || filename.isBlank()) {
+            return "imagem";
+        }
+        String baseName = Paths.get(filename).getFileName().toString();
+        return baseName.replaceAll("[^a-zA-Z0-9._-]", "_");
     }
 
     private User getUsuarioLogado(){

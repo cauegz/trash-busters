@@ -17,5 +17,5 @@ COPY --from=build /workspace/target/*.jar app.jar
 USER spring
 EXPOSE 8080
 
-# -Xmx380m evita estouro nos 512MB do plano gratuito do Render (aumente se usar VPS de 2GB)
-ENTRYPOINT ["java", "-Xmx380m", "-Xms256m", "-jar", "/app/app.jar"]
+# O heap deixa espaço para Metaspace, threads, JIT, Spring e bibliotecas nativas no limite de 512 MB.
+ENTRYPOINT ["java", "-XX:MaxRAMPercentage=55", "-XX:InitialRAMPercentage=20", "-XX:MaxMetaspaceSize=96m", "-XX:+UseSerialGC", "-jar", "/app/app.jar"]

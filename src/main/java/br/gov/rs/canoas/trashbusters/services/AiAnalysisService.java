@@ -2,12 +2,12 @@ package br.gov.rs.canoas.trashbusters.services;
 
 import br.gov.rs.canoas.trashbusters.domain.ai.AiAnalysisResult;
 import org.springframework.ai.content.Media;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MimeType;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.core.io.ByteArrayResource;
 
-import java.io.IOException;
+import java.nio.file.Path;
 
 @Service
 public class AiAnalysisService {
@@ -28,26 +28,8 @@ public class AiAnalysisService {
         }
     }
 
-    public static Media getMedia(MultipartFile imagem) {
-        byte[] conteudoImagem;
-        try {
-            conteudoImagem = imagem.getBytes();
-        } catch (IOException exception) {
-            throw new IllegalArgumentException("Não foi possível ler a imagem enviada", exception);
-        }
-
-        String contentType = imagem.getContentType();
-        if (contentType == null || contentType.isBlank()) {
-            throw new IllegalArgumentException("A imagem enviada não possui um tipo MIME válido");
-        }
-
-        ByteArrayResource resource = new ByteArrayResource(conteudoImagem) {
-            @Override
-            public String getFilename() {
-                return imagem.getOriginalFilename();
-            }
-        };
-
-        return new Media(MimeType.valueOf(contentType), resource);
+    public Media getMedia(Path imagePath) {
+        Resource resource = new FileSystemResource(imagePath);
+        return new Media(MimeType.valueOf("image/jpeg"), resource);
     }
 }

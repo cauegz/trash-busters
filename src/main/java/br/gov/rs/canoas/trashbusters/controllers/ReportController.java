@@ -19,7 +19,6 @@ import org.springframework.ai.content.Media;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,16 +29,18 @@ public class ReportController {
     private final InimigoService inimigoService;
     private final ReportService reportService;
     private final FileStorageService fileStorageService;
+    private final ImageOptimizationService imageOptimizationService;
     private final AiAnalysisService aiAnalysisService;
 
     //4326 é o código padrão pra usar o gps
     private final GeometryFactory geometryFactory = new GeometryFactory(new PrecisionModel(), 4326);
     private final BairroService bairroService;
 
-    public ReportController(InimigoService inimigoService, ReportService reportService, FileStorageService fileStorageService, AiAnalysisService aiAnalysisService, BairroService bairroService) {
+    public ReportController(InimigoService inimigoService, ReportService reportService, FileStorageService fileStorageService, ImageOptimizationService imageOptimizationService, AiAnalysisService aiAnalysisService, BairroService bairroService) {
         this.inimigoService = inimigoService;
         this.reportService = reportService;
         this.fileStorageService = fileStorageService;
+        this.imageOptimizationService = imageOptimizationService;
         this.aiAnalysisService = aiAnalysisService;
         this.bairroService = bairroService;
     }
@@ -51,68 +52,58 @@ public class ReportController {
     ) {
         Point coordernadas = geometryFactory.createPoint(new Coordinate(data.longitude(), data.latitude()));
 
-        MultipartFile imagem = data.imagem();
+        ImageOptimizationService.OptimizedImage imagemOtimizada =
+                imageOptimizationService.optimize(data.imagem());
+        AiAnalysisResult analysis;
+        try {
+            Media media = aiAnalysisService.getMedia(imagemOtimizada.path());
+            analysis = aiAnalysisService.analisarImagem(media);
 
-        Media media = AiAnalysisService.getMedia(imagem);
+            StatusDenuncia status = StatusDenuncia.VALIDATED;
 
-        AiAnalysisResult analysis = this.aiAnalysisService.analisarImagem(media);
+            if (!analysis.valido()) {
+                status = StatusDenuncia.REJECTED_AI;
+                this.reportService.salvarDenuncia(
+                        LocalDateTime.now(), data.endereco(), usuarioLogado,
+                        status, coordernadas,
+                        analysis.categoria(), analysis.severidade(), analysis.justificativa(),
+                        null, null
+                );
+                return ResponseEntity.badRequest().body(
+                        new ReportResponseDTO(
+                                analysis.justificativa(),
+                                analysis.severidade(),
+                                false,
+                                analysis.categoria(),
+                                0,
+                                data.latitude(),
+                                data.longitude(),
+                                null
+                        )
+                );
+            }
 
-        StatusDenuncia status = StatusDenuncia.VALIDATED;
+            String caminho = fileStorageService.storeImage(
+                    imagemOtimizada.path(), imagemOtimizada.originalFilename());
 
-        if (!analysis.valido()) {
-            status = StatusDenuncia.REJECTED_AI;
-            this.reportService.salvarDenuncia(
-                    LocalDateTime.now(), data.endereco(), usuarioLogado,
-                    status, coordernadas,
-                    analysis.categoria(), analysis.severidade(), analysis.justificativa(),
-                    null, null
-            );
-            return ResponseEntity.badRequest().body(
-                    new ReportResponseDTO(
-                            analysis.justificativa(),
-                            analysis.severidade(),
-                            false,
-                            analysis.categoria(),
-                            0,
-                            data.latitude(),
-                            data.longitude(),
-                            null
-                    )
-            );
+            Bairro bairro = bairroService.findByPonto(coordernadas)
+                    .orElseThrow(() -> new IllegalArgumentException("coordenada fora de canoas"));
+
+            Inimigo inimigo = inimigoService.findByBairroId(bairro.getId())
+                    .orElseThrow(() -> new IllegalArgumentException("falha ao pegar inimigo"));
+
+            Integer dano = this.reportService.salvarDenuncia(
+                    LocalDateTime.now(), data.endereco(), usuarioLogado, status,
+                    coordernadas, analysis.categoria(), analysis.severidade(),
+                    analysis.justificativa(), caminho, inimigo);
+
+            return ResponseEntity.ok(new ReportResponseDTO(
+                    analysis.justificativa(), analysis.severidade(), true,
+                    analysis.categoria(), dano, data.latitude(), data.longitude(),
+                    InimigoDTO.fromEntity(inimigo)));
+        } finally {
+            imageOptimizationService.delete(imagemOtimizada);
         }
-
-        //se chegou aqui e porque e valido
-        String caminho = fileStorageService.storeImage(imagem);
-
-        Bairro bairro = bairroService.findByPonto(coordernadas)
-                .orElseThrow(() -> new IllegalArgumentException("coordenada fora de canoas"));
-
-        Inimigo inimigo = inimigoService.findByBairroId(bairro.getId())
-                .orElseThrow(() -> new IllegalArgumentException("falha ao pegar inimigo"));
-
-        Integer dano = this.reportService.salvarDenuncia(
-                LocalDateTime.now(),
-                data.endereco(),
-                usuarioLogado,
-                status,
-                coordernadas,
-                analysis.categoria(),
-                analysis.severidade(),
-                analysis.justificativa(),
-                caminho,
-                inimigo
-        );
-
-        return ResponseEntity.ok(new ReportResponseDTO(
-                analysis.justificativa(),
-                analysis.severidade(),
-                true,
-                analysis.categoria(),
-                dano,
-                data.latitude(),
-                data.longitude(),
-                InimigoDTO.fromEntity(inimigo)
-        ));
     }
 
     @GetMapping("/mine")
