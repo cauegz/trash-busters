@@ -43,7 +43,7 @@ public class AiClientConfig {
         return Client.builder()
                 .apiKey(key)
                 .httpOptions(HttpOptions.builder()
-                        .timeout(45_000)
+                        .timeout(60_000)
                         .retryOptions(HttpRetryOptions.builder().attempts(1).build())
                         .build())
                 .build();
