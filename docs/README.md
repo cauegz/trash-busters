@@ -112,11 +112,13 @@ curl -X POST http://localhost:8080/api/v1/reports \
 ## Estrutura do projeto
 
 ```text
-src/main/java/.../
+backend/src/main/java/.../
 ├── controllers/       # Endpoints HTTP
 ├── domain/            # Entidades, DTOs, enums e repositórios
 ├── services/          # Regras de negócio, IA e armazenamento
 └── infra/             # Segurança, configuração e tratamento de erros
+backend/pom.xml        # Build e dependências da API
+frontend/              # Aplicação React/Vite
 database/init/         # Schema, seeds e dados iniciais do PostgreSQL
 docs/                  # Requisitos e modelo ERD
 trash/                 # Coleção de requisições para testes manuais
@@ -148,12 +150,14 @@ de combate, além dos índices espaciais. O diagrama correspondente está em
 Para executar os testes:
 
 ```bash
+cd backend
 ./mvnw test
 ```
 
 No Windows:
 
 ```powershell
+cd backend
 .\mvnw.cmd test
 ```
 
@@ -161,6 +165,7 @@ Para executar a aplicação localmente, configure as variáveis do banco e da IA
 use:
 
 ```powershell
+cd backend
 .\mvnw.cmd spring-boot:run
 ```
 

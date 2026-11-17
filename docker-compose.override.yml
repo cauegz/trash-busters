@@ -5,8 +5,8 @@ services:
     image: maven:3.9.9-eclipse-temurin-21
     working_dir: /workspace
     volumes:
-      - ./pom.xml:/workspace/pom.xml
-      - ./src:/workspace/src
+      - ./backend/pom.xml:/workspace/pom.xml
+      - ./backend/src:/workspace/src
       - ~/.m2:/root/.m2
     command: ["mvn", "spring-boot:run"]
     environment:

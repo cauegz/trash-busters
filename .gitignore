@@ -2,7 +2,7 @@
 # Java & Spring Boot (Maven & Gradle)
 # ==========================================
 target/
-!.mvn/wrapper/maven-wrapper.jar
+!backend/.mvn/wrapper/maven-wrapper.jar
 !checkstyle.xml
 *.class
 *.jar
