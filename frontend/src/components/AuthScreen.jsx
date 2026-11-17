@@ -42,7 +42,7 @@ export default function AuthScreen({ onAuthenticated }) {
     } catch (err) {
       setError(
         err.message === 'Failed to fetch'
-          ? `Não foi possível conectar à API em ${apiUrl}. Verifique se o backend Spring Boot está rodando na porta 8080 ou clique em "Entrar no Modo Simulação" abaixo.`
+          ? 'Não foi possível conectar ao serviço agora. Tente novamente ou entre no modo de demonstração.'
           : err.message || 'Falha na autenticação. Verifique suas credenciais.'
       );
     } finally {
@@ -58,10 +58,10 @@ export default function AuthScreen({ onAuthenticated }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-center items-center p-4 relative overflow-hidden">
+    <div className="auth-shell min-h-screen bg-slate-50 text-slate-900 flex flex-col justify-center items-center p-4 relative overflow-hidden">
       {/* Glow decorativo */}
-      <div className="absolute -top-40 -left-40 w-96 h-96 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-cyan-500/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -top-40 -left-40 w-96 h-96 bg-emerald-100 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-amber-100 rounded-full blur-3xl pointer-events-none" />
 
       <div className="w-full max-w-md z-10">
         {/* Cabeçalho / Logo */}
@@ -70,8 +70,8 @@ export default function AuthScreen({ onAuthenticated }) {
             <Sparkles className="w-3.5 h-3.5" />
             Prefeitura de Canoas • RPG Ambiental com IA
           </div>
-          <h1 className="font-display text-4xl font-bold tracking-tight text-white flex items-center justify-center gap-3">
-            <span className="p-2.5 rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-600 text-slate-950 shadow-lg shadow-emerald-500/25">
+          <h1 className="font-display text-4xl font-bold tracking-tight text-slate-900 flex items-center justify-center gap-3">
+            <span className="p-2.5 rounded-xl bg-emerald-600 text-white shadow-sm">
               <Shield className="w-8 h-8" />
             </span>
             TRASH BUSTERS
@@ -82,7 +82,7 @@ export default function AuthScreen({ onAuthenticated }) {
         </div>
 
         {/* Card de Login / Registro */}
-        <div className="bg-slate-900/90 backdrop-blur-xl border border-slate-800 rounded-2xl p-6 shadow-2xl">
+        <div className="bg-white border border-slate-200/80 rounded-xl p-6 shadow-sm">
           {/* Seletor de Abas */}
           <div className="grid grid-cols-2 gap-2 p-1 bg-slate-950 rounded-xl border border-slate-800 mb-6">
             <button
@@ -181,12 +181,12 @@ export default function AuthScreen({ onAuthenticated }) {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-bold text-sm shadow-lg shadow-emerald-500/20 transition disabled:opacity-50"
+              className="w-full py-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-sm transition disabled:opacity-50"
             >
               {loading
                 ? 'Conectando ao servidor...'
                 : tab === 'login'
-                ? 'Iniciar Patrulha (Login JWT)'
+                ? 'Entrar na minha conta'
                 : 'Registrar Novo Agente'}
             </button>
           </form>
@@ -206,32 +206,8 @@ export default function AuthScreen({ onAuthenticated }) {
             className="w-full py-2.5 px-4 rounded-xl bg-slate-800/90 hover:bg-slate-800 border border-slate-700 text-slate-200 text-xs font-semibold flex items-center justify-center gap-2 transition"
           >
             <Play className="w-3.5 h-3.5 text-emerald-400" />
-            Entrar no Modo Simulação Interativo (Sem precisar do Backend)
+            Conhecer a plataforma em modo de demonstração
           </button>
-
-          {/* Configuração da URL da API */}
-          <div className="mt-4 pt-3 border-t border-slate-800/80">
-            <button
-              type="button"
-              onClick={() => setShowConfig((v) => !v)}
-              className="text-xs text-slate-400 hover:text-slate-200 flex items-center gap-1.5"
-            >
-              <Server className="w-3.5 h-3.5" />
-              Endpoint da API: <span className="font-mono text-emerald-400">{apiUrl}</span>
-            </button>
-
-            {showConfig && (
-              <div className="mt-2">
-                <input
-                  type="url"
-                  value={apiUrl}
-                  onChange={(e) => setApiUrl(e.target.value)}
-                  className="w-full px-3 py-1.5 rounded-lg bg-slate-950 border border-slate-800 text-xs font-mono text-slate-200"
-                  placeholder="http://localhost:8080"
-                />
-              </div>
-            )}
-          </div>
         </div>
       </div>
     </div>

@@ -79,7 +79,7 @@ export default function App() {
         setAuthenticated(false);
       } else {
         setApiWarning(
-          `Não foi possível carregar dados do servidor (${err.message}). Você pode alternar para o Modo Simulação no topo caso o backend esteja desligado.`
+          'Não foi possível atualizar as informações agora. Você pode continuar usando o modo de demonstração.'
         );
       }
     } finally {
@@ -167,18 +167,18 @@ export default function App() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+    <div className="app-shell min-h-screen bg-slate-50 text-slate-900 flex flex-col">
       {/* Top Navbar / HUD */}
-      <header className="sticky top-0 z-30 bg-slate-950/90 backdrop-blur-xl border-b border-slate-800/80">
+      <header className="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-4">
           {/* Brand */}
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-600 text-slate-950 shadow-md shadow-emerald-500/20">
+            <div className="p-2 rounded-lg bg-emerald-600 text-white shadow-sm">
               <Shield className="w-6 h-6" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-display font-bold text-lg tracking-tight text-white">
+                <span className="font-display font-bold text-lg tracking-tight text-slate-900">
                   TRASH BUSTERS
                 </span>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
@@ -186,7 +186,7 @@ export default function App() {
                 </span>
                 {isDemoMode() && (
                   <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                    Modo Simulação
+                    Demonstração
                   </span>
                 )}
               </div>
@@ -225,11 +225,11 @@ export default function App() {
               <button
                 type="button"
                 onClick={handleResetDemo}
-                title="Reiniciar HP dos Bosses na Simulação"
-                className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs inline-flex items-center gap-1.5 transition"
+                title="Reiniciar dados da demonstração"
+                className="p-2 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 text-xs inline-flex items-center gap-1.5 transition"
               >
                 <RotateCcw className="w-4 h-4 text-amber-400" />
-                <span className="hidden sm:inline">Resetar Demo</span>
+                <span className="hidden sm:inline">Reiniciar</span>
               </button>
             )}
 
@@ -238,7 +238,7 @@ export default function App() {
               onClick={loadDashboardData}
               disabled={loadingData}
               title="Atualizar dados"
-              className="p-2 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 transition"
+              className="p-2 rounded-lg bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 transition"
             >
               <RefreshCw
                 className={`w-4 h-4 ${loadingData ? 'animate-spin text-emerald-400' : ''}`}
@@ -248,7 +248,7 @@ export default function App() {
             <button
               type="button"
               onClick={handleLogout}
-              className="px-3 py-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-300 text-xs font-semibold inline-flex items-center gap-1.5 transition"
+              className="px-3 py-2 rounded-lg bg-white hover:bg-rose-50 border border-rose-200 text-rose-600 text-xs font-semibold inline-flex items-center gap-1.5 transition"
             >
               <LogOut className="w-4 h-4" />
               Sair
@@ -257,7 +257,7 @@ export default function App() {
         </div>
       </header>
 
-      {/* Alerta se o backend estiver offline */}
+      {/* Alerta de indisponibilidade */}
       {apiWarning && (
         <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 mt-4">
           <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex flex-wrap items-center justify-between gap-3 text-xs text-amber-200">
@@ -267,7 +267,7 @@ export default function App() {
               onClick={handleSwitchToDemo}
               className="px-3 py-1.5 rounded-lg bg-amber-400 text-slate-950 font-bold hover:bg-amber-300 transition"
             >
-              Ativar Modo Simulação Agora
+              Continuar em modo de demonstração
             </button>
           </div>
         </div>
@@ -329,7 +329,7 @@ export default function App() {
               />
             </div>
             <div className="text-[11px] text-slate-500 font-mono">
-              HP Total Restante: {totalHpAtual.toLocaleString('pt-BR')} / {totalHpMax.toLocaleString('pt-BR')}
+              Impacto restante: {totalHpAtual.toLocaleString('pt-BR')} / {totalHpMax.toLocaleString('pt-BR')}
             </div>
           </div>
         </div>
@@ -410,7 +410,7 @@ export default function App() {
                               : 'text-rose-400 font-bold'
                           }
                         >
-                          {inimigo.hpAtual} / {inimigo.hpMaximo} HP ({pct}%)
+                          {pct}% de progresso
                         </span>
                       </div>
                       <div className="w-full h-3.5 rounded-full bg-slate-950 border border-slate-800 overflow-hidden">
@@ -441,7 +441,7 @@ export default function App() {
                   Arena de Bosses por Bairro ({filteredBairros.length})
                 </h2>
                 <p className="text-xs text-slate-400">
-                  Colabore com os moradores do seu bairro para zerar o HP de cada Boss
+                  Colabore com os moradores do seu bairro para melhorar a cidade
                 </p>
               </div>
 
@@ -534,7 +534,7 @@ export default function App() {
 
                     <div>
                       <div className="flex justify-between text-[11px] font-mono mb-1">
-                        <span className="text-slate-400">HP</span>
+                        <span className="text-slate-400">Progresso</span>
                         <span className="text-slate-200">
                           {inimigo.hpAtual} / {inimigo.hpMaximo} ({pct}%)
                         </span>
@@ -576,7 +576,7 @@ export default function App() {
                 Meu Histórico de Combate ({reports.length})
               </h2>
               <span className="text-[11px] text-slate-400 font-mono">
-                GET /api/v1/reports/mine
+                Denúncias enviadas por você
               </span>
             </div>
 
@@ -623,7 +623,7 @@ export default function App() {
                             rep.valido ? 'text-emerald-400' : 'text-slate-500'
                           }`}
                         >
-                          {rep.valido ? `-${rep.dano} HP` : '0 HP'}
+                          {rep.valido ? `+${rep.dano} pontos` : 'Em análise'}
                         </span>
                       </div>
 
@@ -648,29 +648,6 @@ export default function App() {
             )}
           </div>
 
-          {/* Guia da Fórmula de Dano */}
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-4 text-xs">
-            <div className="flex items-center gap-1.5 font-display font-bold text-slate-200 mb-2">
-              <Info className="w-4 h-4 text-emerald-400" />
-              Fórmula de Dano da IA Multimodal
-            </div>
-            <p className="text-slate-400 mb-3">
-              O dano causado ao Boss é calculado automaticamente pelo backend:
-              <code className="ml-1 px-1.5 py-0.5 rounded bg-slate-950 text-emerald-300 font-mono">
-                Dano = (50 × Multiplicador) + (Severidade × 10)
-              </code>
-            </p>
-            <div className="flex flex-wrap gap-1.5">
-              {Object.entries(CATEGORIAS_LIXO).map(([key, info]) => (
-                <span
-                  key={key}
-                  className={`px-2 py-0.5 rounded-md border text-[11px] font-medium ${info.badge}`}
-                >
-                  {info.icon} {info.label}: <strong>{info.mult}x</strong>
-                </span>
-              ))}
-            </div>
-          </div>
         </div>
       </main>
     </div>

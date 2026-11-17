@@ -39,7 +39,7 @@ export default function CanoasMap({
       zoomControl: true,
     });
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
       attribution: '&copy; OpenStreetMap &copy; CARTO | Trash Busters Canoas',
       maxZoom: 19,
     }).addTo(map);
@@ -91,11 +91,11 @@ export default function CanoasMap({
             ? Math.max(0, Math.min(1, inimigo.hpAtual / (inimigo.hpMaximo || 1000)))
             : 1;
 
-          let fillColor = '#f43f5e'; // rose-500 (Boss ativo HP alto)
+          let fillColor = '#fb7185'; // rose-400 (Boss ativo HP alto)
           if (derrotado) {
-            fillColor = '#10b981'; // emerald-500 (Bairro limpo / Boss derrotado)
+            fillColor = '#34d399'; // emerald-400 (Bairro limpo / Boss derrotado)
           } else if (hpRatio < 0.5) {
-            fillColor = '#f59e0b'; // amber-500 (Boss enfraquecido)
+            fillColor = '#fbbf24'; // amber-400 (Boss enfraquecido)
           }
 
           return {
@@ -194,7 +194,7 @@ export default function CanoasMap({
           circle.bindPopup(`
             <div style="font-size:12px;min-width:170px;">
               <div style="font-weight:700;margin-bottom:4px;color:${rep.valido ? '#34d399' : '#f87171'}">
-                ${rep.valido ? `💥 -${rep.dano} HP (${rep.categoria})` : '❌ Rejeitado pela IA'}
+                ${rep.valido ? `✅ Denúncia confirmada (${rep.categoria})` : '❌ Não confirmada'}
               </div>
               <div style="color:#cbd5e1;font-size:11px;">${rep.justificativaIa || ''}</div>
             </div>
@@ -250,13 +250,13 @@ export default function CanoasMap({
   };
 
   return (
-    <div className="relative rounded-2xl overflow-hidden border border-slate-800 bg-slate-900/70 shadow-2xl">
+    <div className="map-card relative overflow-hidden">
       {/* Barra superior do mapa */}
-      <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 bg-slate-900/95 border-b border-slate-800">
+      <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 bg-white border-b border-slate-200">
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center justify-center w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
           <h3 className="font-display font-bold text-sm sm:text-base text-slate-100">
-            Radar Geoespacial PostGIS — Bairros de Canoas/RS
+            Mapa de ocorrências em Canoas/RS
           </h3>
         </div>
 
@@ -288,15 +288,15 @@ export default function CanoasMap({
       <div ref={mapContainerRef} className="w-full h-[380px] sm:h-[440px] z-0" />
 
       {/* Legenda inferior */}
-      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-slate-950/90 border-t border-slate-800/80 text-xs text-slate-400">
+      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 bg-slate-50 border-t border-slate-200 text-xs text-slate-600">
         <div className="flex flex-wrap items-center gap-4">
           <span className="inline-flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-sm bg-rose-500/70 border border-rose-400" />
-            Boss Ativo (HP Alto)
+            Área com mais ocorrências
           </span>
           <span className="inline-flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-sm bg-amber-500/70 border border-amber-400" />
-            Boss Enfraquecido (&lt;50% HP)
+            Área em recuperação
           </span>
           <span className="inline-flex items-center gap-1.5">
             <span className="w-3 h-3 rounded-sm bg-emerald-500/70 border border-emerald-400" />
@@ -304,7 +304,7 @@ export default function CanoasMap({
           </span>
         </div>
         <span className="text-slate-400">
-          💡 Clique em qualquer bairro no mapa para mirar o ataque naquela coordenada
+          💡 Clique em um bairro ou ponto do mapa para escolher o local da denúncia
         </span>
       </div>
     </div>

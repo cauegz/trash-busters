@@ -259,7 +259,7 @@ export const api = {
       }
 
       const reportResponse = {
-        justificativaIa: `IA Multimodal detectou descarte irregular de ${CATEGORIAS_LIXO[demoCategoria]?.label || demoCategoria} com severidade nível ${demoSeveridade}/5 em ${closestBairro.nome}.`,
+        justificativaIa: `A análise identificou descarte irregular de ${CATEGORIAS_LIXO[demoCategoria]?.label || demoCategoria} com nível de impacto ${demoSeveridade}/5 em ${closestBairro.nome}.`,
         severidade: demoSeveridade,
         valido: true,
         categoria: demoCategoria,

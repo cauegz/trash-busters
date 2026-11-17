@@ -4,20 +4,101 @@
 
 @layer base {
   body {
-    @apply bg-slate-950 text-slate-100;
+    @apply bg-slate-50 text-slate-900;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 }
 
 .leaflet-container {
-  background: #090d16 !important;
+  background: #e2e8f0 !important;
   font-family: 'Inter', system-ui, sans-serif;
 }
 
 .leaflet-popup-content-wrapper,
 .leaflet-popup-tip {
-  background: #0f172a !important;
-  color: #f8fafc !important;
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 8px 20px -8px rgba(15, 23, 42, 0.3);
+}
+
+.app-shell,
+.auth-shell {
+  @apply bg-slate-50 text-slate-900;
+}
+
+/* Keep the existing component logic while giving the dashboard one visual language. */
+.app-shell .bg-slate-950,
+.app-shell .bg-slate-900,
+.app-shell .bg-slate-900\/90,
+.app-shell .bg-slate-950\/90,
+.app-shell .bg-slate-950\/80,
+.app-shell .bg-slate-950\/70,
+.app-shell .bg-slate-950\/60,
+.auth-shell .bg-slate-900\/90,
+.auth-shell .bg-slate-950 {
+  background-color: #ffffff !important;
+}
+
+.app-shell .border-slate-800,
+.app-shell .border-slate-800\/80,
+.app-shell .border-slate-800\/90,
+.auth-shell .border-slate-800 {
+  border-color: rgb(226 232 240 / 0.9) !important;
+}
+
+.app-shell .text-white,
+.auth-shell .text-white {
+  color: #0f172a !important;
+}
+
+.app-shell .text-slate-100,
+.app-shell .text-slate-200,
+.auth-shell .text-slate-100,
+.auth-shell .text-slate-200 {
+  color: #334155 !important;
+}
+
+.app-shell .text-slate-300,
+.auth-shell .text-slate-300 {
+  color: #475569 !important;
+}
+
+.app-shell .text-slate-400,
+.auth-shell .text-slate-400 {
+  color: #64748b !important;
+}
+
+.app-shell .shadow-xl,
+.app-shell .shadow-2xl,
+.auth-shell .shadow-2xl {
+  box-shadow: 0 10px 24px -16px rgb(15 23 42 / 0.35) !important;
+}
+
+.app-shell input,
+.app-shell select,
+.auth-shell input,
+.auth-shell select {
+  color: #0f172a;
+  background-color: #fff;
+  border-color: #cbd5e1;
+}
+
+.app-shell input::placeholder,
+.auth-shell input::placeholder {
+  color: #94a3b8;
+}
+
+.app-shell input:focus,
+.app-shell select:focus,
+.auth-shell input:focus {
+  box-shadow: 0 0 0 3px rgb(16 185 129 / 0.12);
+}
+
+.report-card {
+  @apply rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm;
+}
+
+.map-card {
+  @apply rounded-xl border border-slate-200/80 bg-white shadow-sm;
 }

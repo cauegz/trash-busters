@@ -186,20 +186,20 @@ export default function ReportForm({
   };
 
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900/90 p-5 shadow-xl">
+    <div className="report-card">
       <div className="flex items-center justify-between gap-2 mb-4">
         <div>
           <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
             <Flame className="w-3.5 h-3.5" />
-            Console de Ataque Ambiental
+            Central de denúncias
           </span>
           <h2 className="font-display text-lg font-bold text-white">
-            Nova Denúncia de Lixo (Atacar Boss)
+            Registrar novo descarte irregular
           </h2>
         </div>
       </div>
 
-      {/* Feedback de Combate (Resultado da IA) */}
+      {/* Resultado da denúncia */}
       {lastResult && (
         <div
           className={`mb-5 p-4 rounded-xl border ${
@@ -213,36 +213,36 @@ export default function ReportForm({
               {lastResult.valido ? (
                 <>
                   <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-                  <span>ATAQUE CONFIRMADO! -{lastResult.dano} HP NO BOSS!</span>
+                  <span>Denúncia confirmada! Você ajudou a limpar a cidade.</span>
                 </>
               ) : (
                 <>
                   <ShieldAlert className="w-5 h-5 text-rose-400 shrink-0" />
-                  <span>DENÚNCIA REJEITADA PELA IA (0 DANO)</span>
+                  <span>Não foi possível confirmar esta denúncia</span>
                 </>
               )}
             </div>
             {lastResult.valido && (
               <span className="px-2.5 py-0.5 rounded-full text-xs font-mono font-bold bg-emerald-500 text-slate-950">
-                +{lastResult.dano} XP
+                +{lastResult.dano} pontos
               </span>
             )}
           </div>
 
           <p className="text-xs text-slate-300 mt-2 leading-relaxed">
-            <strong>Análise da IA:</strong> {lastResult.justificativaIa}
+            <strong>Resultado da análise:</strong> {lastResult.justificativaIa}
           </p>
 
           <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
             <span className="px-2.5 py-1 rounded-lg bg-slate-900/80 border border-slate-700 font-mono">
-              Categoria: <strong>{lastResult.categoria || 'N/A'}</strong>
+              Categoria: <strong>{lastResult.categoria || 'Não identificada'}</strong>
             </span>
             <span className="px-2.5 py-1 rounded-lg bg-slate-900/80 border border-slate-700 font-mono">
-              Severidade: <strong>{lastResult.severidade ?? 0}/5</strong>
+              Nível de impacto: <strong>{lastResult.severidade ?? 0}/5</strong>
             </span>
             {lastResult.inimigo && (
               <span className="px-2.5 py-1 rounded-lg bg-slate-900/80 border border-slate-700 font-mono text-amber-300">
-                Boss {lastResult.inimigo.nome}: {lastResult.inimigo.hpAtual}/{lastResult.inimigo.hpMaximo} HP
+                Área beneficiada: {lastResult.inimigo.bairro || lastResult.inimigo.nome}
               </span>
             )}
           </div>
@@ -376,7 +376,7 @@ export default function ReportForm({
                   Clique para enviar foto do lixo
                 </span>
                 <span className="text-[11px] text-slate-500 mt-0.5">
-                  JPG, PNG ou WEBP • Validado por IA Multimodal
+                  JPG, PNG ou WEBP • A foto será analisada automaticamente
                 </span>
               </div>
             )}
@@ -394,12 +394,12 @@ export default function ReportForm({
           <div className="p-3 rounded-xl bg-slate-950/90 border border-slate-800 space-y-2.5">
             <div className="text-[11px] font-semibold uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5" />
-              Simulador de Resposta da IA (Modo Demo)
+              Preferências da demonstração
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div>
                 <label className="block text-[11px] text-slate-400 mb-1">
-                  Categoria Detectada
+                  Tipo de descarte
                 </label>
                 <select
                   value={demoCategoria}
@@ -415,7 +415,7 @@ export default function ReportForm({
               </div>
               <div>
                 <label className="block text-[11px] text-slate-400 mb-1">
-                  Severidade (1 a 5)
+                  Nível de impacto (1 a 5)
                 </label>
                 <select
                   value={demoSeveridade}
@@ -424,7 +424,7 @@ export default function ReportForm({
                 >
                   {[1, 2, 3, 4, 5].map((n) => (
                     <option key={n} value={n}>
-                      Nível {n} (+{n * 10} dano bônus)
+                      Nível {n}
                     </option>
                   ))}
                 </select>
@@ -436,12 +436,12 @@ export default function ReportForm({
         <button
           type="submit"
           disabled={submitting}
-          className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-display font-bold text-sm shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 transition disabled:opacity-50"
+          className="w-full py-3 px-4 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-display font-bold text-sm shadow-sm flex items-center justify-center gap-2 transition disabled:opacity-50"
         >
           <Send className="w-4 h-4" />
           {submitting
-            ? 'Analisando imagem na IA e calculando dano...'
-            : 'Enviar Denúncia & Atacar Boss'}
+            ? 'Analisando sua denúncia...'
+            : 'Enviar denúncia'}
         </button>
       </form>
     </div>
