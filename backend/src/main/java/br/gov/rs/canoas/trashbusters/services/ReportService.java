@@ -1,6 +1,7 @@
 package br.gov.rs.canoas.trashbusters.services;
 
 import br.gov.rs.canoas.trashbusters.domain.inimigo.Inimigo;
+import br.gov.rs.canoas.trashbusters.domain.inimigo.InimigoRepository;
 import br.gov.rs.canoas.trashbusters.domain.report.CategoriaLixo;
 import br.gov.rs.canoas.trashbusters.domain.report.DenunciaLixo;
 import br.gov.rs.canoas.trashbusters.domain.report.DenunciaLixoRepository;
@@ -20,10 +21,16 @@ import java.util.List;
 public class ReportService {
     private static final Integer DANO_BASE = 50;
     private final DenunciaLixoRepository denunciaRepository;
+    private final InimigoRepository inimigoRepository;
     private final UserRepository usuarioRepository;
 
-    public ReportService(DenunciaLixoRepository denunciaRepository, UserRepository usuarioRepository) {
+    public ReportService(
+            DenunciaLixoRepository denunciaRepository,
+            InimigoRepository inimigoRepository,
+            UserRepository usuarioRepository
+    ) {
         this.denunciaRepository = denunciaRepository;
+        this.inimigoRepository = inimigoRepository;
         this.usuarioRepository = usuarioRepository;
     }
 
@@ -46,9 +53,12 @@ public class ReportService {
 
         if(inimigo != null && inimigo.getStatus() != StatusInimigo.DERROTADO){
             inimigo.receberDano(dano, StatusInimigo.DERROTADO);
+            inimigoRepository.save(inimigo);
 
-            usuario.receberXp(dano);
-            usuarioRepository.save(usuario);
+            if (usuario != null) {
+                usuario.receberXp(dano);
+                usuarioRepository.save(usuario);
+            }
         }
 
         denuncia.setCriadoEm(criadoEm);

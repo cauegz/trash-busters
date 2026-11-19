@@ -1,6 +1,7 @@
 package br.gov.rs.canoas.trashbusters.services;
 
 import br.gov.rs.canoas.trashbusters.domain.inimigo.Inimigo;
+import br.gov.rs.canoas.trashbusters.domain.inimigo.InimigoRepository;
 import br.gov.rs.canoas.trashbusters.domain.report.CategoriaLixo;
 import br.gov.rs.canoas.trashbusters.domain.report.DenunciaLixo;
 import br.gov.rs.canoas.trashbusters.domain.report.DenunciaLixoRepository;
@@ -21,9 +22,10 @@ class ReportServiceTest {
     @Test
     void devePersistirDenunciaEAplicarDanoAoInimigo() {
         DenunciaLixoRepository repository = mock(DenunciaLixoRepository.class);
+        InimigoRepository inimigoRepository = mock(InimigoRepository.class);
         UserRepository userRepository = mock(UserRepository.class);
 
-        ReportService service = new ReportService(repository, userRepository);
+        ReportService service = new ReportService(repository, inimigoRepository, userRepository);
         Inimigo inimigo = new Inimigo();
         inimigo.setHpAtual(200);
         inimigo.setStatus(StatusInimigo.ATIVO);
@@ -43,6 +45,7 @@ class ReportServiceTest {
 
         assertEquals(80, inimigo.getHpAtual());
         assertEquals(StatusInimigo.ATIVO, inimigo.getStatus());
+        verify(inimigoRepository).save(inimigo);
 
         ArgumentCaptor<DenunciaLixo> captor = ArgumentCaptor.forClass(DenunciaLixo.class);
         verify(repository).save(captor.capture());
@@ -55,9 +58,10 @@ class ReportServiceTest {
     @Test
     void devePersistirDenunciaRejeitadaSemAplicarDano() {
         DenunciaLixoRepository repository = mock(DenunciaLixoRepository.class);
+        InimigoRepository inimigoRepository = mock(InimigoRepository.class);
         UserRepository userRepository = mock(UserRepository.class);
 
-        ReportService service = new ReportService(repository, userRepository);
+        ReportService service = new ReportService(repository, inimigoRepository, userRepository);
 
         service.salvarDenuncia(
                 LocalDateTime.now(),
